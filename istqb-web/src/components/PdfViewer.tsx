@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type TouchEvent } from 'react';
 import { Document, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/TextLayer.css';
 import PdfPage from './PdfPage';
@@ -13,8 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const PDF_PATH = '/files/ctfl-syllabus-ko.pdf';
 const MIN_ZOOM = 0.75;
-const MAX_ZOOM = 2.25;
-const ZOOM_STEP = 0.15;
+const MAX_ZOOM = 3;
 
 type PendingSelection = {
   pageNumber: number;
@@ -24,9 +23,14 @@ type PendingSelection = {
   toolbarLeft: number;
 };
 
+type ReactTouchList = TouchEvent<HTMLDivElement>['touches'];
+
 export default function PdfViewer() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
+  const pinchStartDistanceRef = useRef(0);
+  const pinchStartZoomRef = useRef(1);
+  const isPinchingRef = useRef(false);
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [containerWidth, setContainerWidth] = useState(360);
@@ -152,6 +156,43 @@ export default function PdfViewer() {
     clearSelection();
   }, [annotations.length, clearSelection]);
 
+  const getTouchDistance = (touches: ReactTouchList) => {
+    const [first, second] = [touches[0], touches[1]];
+    return Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY);
+  };
+
+  const handleTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (event.touches.length !== 2) return;
+
+    isPinchingRef.current = true;
+    pinchStartDistanceRef.current = getTouchDistance(event.touches);
+    pinchStartZoomRef.current = zoom;
+    clearSelection();
+  }, [clearSelection, zoom]);
+
+  const handleTouchMove = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (!isPinchingRef.current || event.touches.length !== 2) return;
+
+    event.preventDefault();
+    const nextDistance = getTouchDistance(event.touches);
+    const scale = nextDistance / pinchStartDistanceRef.current;
+    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, pinchStartZoomRef.current * scale));
+    setZoom(nextZoom);
+  }, []);
+
+  const handleTouchEnd = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (!isPinchingRef.current) {
+      captureSelection();
+      return;
+    }
+
+    if (event.touches.length < 2) {
+      window.setTimeout(() => {
+        isPinchingRef.current = false;
+      }, 120);
+    }
+  }, [captureSelection]);
+
   return (
     <section className="pdf-viewer" ref={containerRef}>
       <div className="pdf-status-row">
@@ -172,11 +213,8 @@ export default function PdfViewer() {
         >
           다음
         </button>
-        <button type="button" onClick={() => setZoom((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP))}>
-          -
-        </button>
-        <button type="button" onClick={() => setZoom((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP))}>
-          +
+        <button type="button" onClick={() => setZoom(1)} disabled={zoom === 1}>
+          기준
         </button>
         <button type="button" className="danger" onClick={clearAll} disabled={annotations.length === 0}>
           전체 삭제
@@ -188,7 +226,13 @@ export default function PdfViewer() {
           PDF 파일을 public/files/ctfl-syllabus-ko.pdf 위치에 추가해주세요.
         </div>
       ) : (
-        <div className="pdf-scroll" onMouseUp={captureSelection} onTouchEnd={captureSelection}>
+        <div
+          className="pdf-scroll"
+          onMouseUp={captureSelection}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <Document
             file={PDF_PATH}
             loading={<div className="pdf-empty">PDF를 불러오는 중...</div>}
