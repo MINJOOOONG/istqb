@@ -155,7 +155,7 @@ body {
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 44px 44px 1.35fr;
+  grid-template-columns: 1fr 1fr 0.9fr 1.35fr;
   gap: 6px;
   padding: 8px 0;
   background: rgba(255, 255, 255, 0.96);
@@ -190,6 +190,7 @@ body {
   overflow-y: visible;
   padding-bottom: 18px;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .pdf-page-shell {
