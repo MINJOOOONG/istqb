@@ -20,14 +20,21 @@ export default function OptionButton({ option, selected, revealed, isCorrect, ex
   }
 
   return (
-    <button className={className} onClick={() => onSelect(option.id)} disabled={revealed}>
+    <button
+      type="button"
+      className={className}
+      onClick={() => onSelect(option.id)}
+      disabled={revealed}
+    >
       <span className="option-id">{option.id.toUpperCase()}</span>
-      <span className="option-text">{option.text}</span>
+      <span className="option-body">
+        <span className="option-text">{option.text}</span>
+        {revealed && explanation && (
+          <span className="option-explanation">{explanation}</span>
+        )}
+      </span>
       {revealed && (isCorrect || selected) && (
         <span className="option-icon">{isCorrect ? '✓' : '✗'}</span>
-      )}
-      {revealed && explanation && (
-        <p className="option-explanation">{explanation}</p>
       )}
     </button>
   );

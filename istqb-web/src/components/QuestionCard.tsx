@@ -5,6 +5,8 @@ import QuestionResult from './QuestionResult';
 import { checkAnswer } from '../utils/quiz';
 import { recordAnswer, removeWrongId, getWrongIds, saveWrongNote } from '../utils/storage';
 
+// --- QuestionCard component ---
+
 interface Props {
   question: Question;
   index: number;
@@ -13,7 +15,13 @@ interface Props {
   isLast: boolean;
 }
 
-export default function QuestionCard({ question, index, total, onNext, isLast }: Props) {
+export default function QuestionCard({
+  question,
+  index,
+  total,
+  onNext,
+  isLast,
+}: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [revealed, setRevealed] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -72,20 +80,30 @@ export default function QuestionCard({ question, index, total, onNext, isLast }:
   };
 
   const isInWrong = getWrongIds().includes(question.id);
+  const questionSourceLabel = `실러버스 ${question.examSet.toUpperCase()} ${question.questionNumber}번`;
 
   return (
     <div className="question-card">
       <div className="question-meta">
-        <span className="meta-progress">{index + 1} / {total}</span>
+        <span className="meta-progress">
+          {index + 1} / {total}
+        </span>
         <span className="meta-badge chapter">Ch.{question.chapter}</span>
-        <span className={`meta-badge klevel ${question.kLevel.toLowerCase()}`}>{question.kLevel}</span>
+        <span
+          className={`meta-badge klevel ${question.kLevel.toLowerCase()}`}
+        >
+          {question.kLevel}
+        </span>
+        <span className="question-source-badge">{questionSourceLabel}</span>
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 
-      <p className="question-text">{question.questionText}</p>
+      <div className="question-text">{question.questionText}</div>
 
       {question.isMultipleAnswer && (
-        <p className="multi-hint">복수 정답 ({question.correctAnswers.length}개 선택)</p>
+        <p className="multi-hint">
+          복수 정답 ({question.correctAnswers.length}개 선택)
+        </p>
       )}
 
       <div className="options">
@@ -96,26 +114,33 @@ export default function QuestionCard({ question, index, total, onNext, isLast }:
             selected={selected.has(opt.id)}
             revealed={revealed}
             isCorrect={question.correctAnswers.includes(opt.id)}
-            explanation={revealed ? question.optionExplanations[opt.id] : undefined}
+            explanation={
+              revealed ? question.optionExplanations[opt.id] : undefined
+            }
             onSelect={handleSelect}
           />
         ))}
       </div>
 
       {!revealed ? (
-        <button className="btn-primary" onClick={handleCheck} disabled={selected.size === 0}>
+        <button
+          className="btn-primary"
+          onClick={handleCheck}
+          disabled={selected.size === 0}
+        >
           정답 확인
         </button>
       ) : (
         <QuestionResult
           question={question}
-          selectedAnswers={[...selected]}
           isCorrect={isCorrect}
           isInWrong={isInWrong}
           onNext={onNext}
           onRetry={handleRetry}
           onSaveToWrongNote={!isCorrect ? handleManualSave : undefined}
-          onRemoveFromWrongNote={isCorrect && isInWrong ? handleRemoveFromWrong : undefined}
+          onRemoveFromWrongNote={
+            isCorrect && isInWrong ? handleRemoveFromWrong : undefined
+          }
           isLast={isLast}
         />
       )}
