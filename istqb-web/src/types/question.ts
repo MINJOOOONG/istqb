@@ -3,6 +3,13 @@ export interface QuestionOption {
   text: string;
 }
 
+export interface SyllabusReference {
+  chapter: string;
+  section: string;
+  title: string;
+  learningObjective?: string;
+}
+
 export interface Question {
   id: string;
   source: string;
@@ -23,4 +30,7 @@ export interface Question {
   optionExplanations: Record<string, string>;
   tags: string[];
   isMultipleAnswer: boolean;
+  keyConcepts: string[];
+  reviewTip: string;
+  syllabusReference: SyllabusReference;
 }

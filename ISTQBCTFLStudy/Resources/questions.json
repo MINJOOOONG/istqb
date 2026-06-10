@@ -1,0 +1,312 @@
+[
+  {
+    "id": "q001",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "1",
+    "chapter": 1,
+    "chapterTitleEn": "Fundamentals of Testing",
+    "chapterTitleKo": "테스팅의 기초",
+    "section": "1.1",
+    "sectionTitle": "What is Testing?",
+    "learningObjective": "FL-1.1.1",
+    "kLevel": "K1",
+    "points": 1,
+    "questionText": "다음 중 소프트웨어 테스팅의 일반적인 목적으로 가장 적합한 것은?",
+    "options": [
+      { "id": "A", "text": "결함이 없음을 증명하는 것" },
+      { "id": "B", "text": "요구사항 충족 여부를 검증하고 결함을 발견하는 것" },
+      { "id": "C", "text": "개발자의 코딩 스타일을 검토하는 것" },
+      { "id": "D", "text": "프로젝트 일정을 단축하는 것" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "테스팅의 목적은 작업 산출물 평가, 요구사항 충족 검증, 결함 발견, 품질 수준에 대한 자신감 확보 등이다.",
+    "optionExplanations": {
+      "A": "테스팅은 결함이 없음을 증명할 수 없다. 이것은 테스팅의 원리 중 하나이다.",
+      "B": "정답. 테스팅의 주요 목적에 해당한다.",
+      "C": "코딩 스타일 검토는 테스팅이 아닌 코드 리뷰에 해당한다.",
+      "D": "테스팅은 일정 단축 도구가 아니다."
+    },
+    "tags": ["testing-purpose", "fundamentals"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q002",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "2",
+    "chapter": 1,
+    "chapterTitleEn": "Fundamentals of Testing",
+    "chapterTitleKo": "테스팅의 기초",
+    "section": "1.2",
+    "sectionTitle": "Why is Testing Necessary?",
+    "learningObjective": "FL-1.2.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "오류(error), 결함(defect), 장애(failure)의 관계를 가장 올바르게 설명한 것은?",
+    "options": [
+      { "id": "A", "text": "장애가 발생하면 결함이 만들어지고 오류가 된다" },
+      { "id": "B", "text": "사람의 오류가 결함을 만들고 결함이 장애를 일으킬 수 있다" },
+      { "id": "C", "text": "결함과 장애는 같은 의미이다" },
+      { "id": "D", "text": "오류는 항상 장애로 이어진다" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "사람은 오류(mistake)를 범하고, 이는 코드나 문서에 결함(defect/bug)을 만든다. 결함이 실행되면 장애(failure)가 발생할 수 있다.",
+    "optionExplanations": {
+      "A": "순서가 반대이다. 오류 → 결함 → 장애 순이다.",
+      "B": "정답. 오류 → 결함 → 장애의 올바른 인과 관계이다.",
+      "C": "결함은 코드 내 문제이고 장애는 실행 시 나타나는 현상이다.",
+      "D": "모든 결함이 장애로 이어지는 것은 아니다."
+    },
+    "tags": ["error", "defect", "failure"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q003",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "3",
+    "chapter": 1,
+    "chapterTitleEn": "Fundamentals of Testing",
+    "chapterTitleKo": "테스팅의 기초",
+    "section": "1.3",
+    "sectionTitle": "Testing Principles",
+    "learningObjective": "FL-1.3.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "'살충제 패러독스(Pesticide Paradox)'를 가장 올바르게 설명한 것은?",
+    "options": [
+      { "id": "A", "text": "테스트를 반복하면 새로운 결함을 발견할 확률이 높아진다" },
+      { "id": "B", "text": "같은 테스트를 반복하면 새로운 결함을 발견하지 못하게 된다" },
+      { "id": "C", "text": "자동화된 테스트는 수동 테스트보다 항상 효과적이다" },
+      { "id": "D", "text": "테스트 초기에는 결함을 발견할 수 없다" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "같은 테스트를 반복 수행하면 더 이상 새로운 결함을 발견할 수 없다. 이를 방지하려면 테스트 케이스를 정기적으로 검토하고 수정해야 한다.",
+    "optionExplanations": {
+      "A": "반복할수록 효과가 줄어드는 것이 살충제 패러독스이다.",
+      "B": "정답. 테스팅의 7가지 원리 중 하나이다.",
+      "C": "자동화와 수동 테스트의 효과는 상황에 따라 다르다.",
+      "D": "조기 테스팅은 오히려 결함 발견에 효과적이다."
+    },
+    "tags": ["testing-principles", "pesticide-paradox"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q004",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "4",
+    "chapter": 2,
+    "chapterTitleEn": "Testing Throughout the Software Development Lifecycle",
+    "chapterTitleKo": "SDLC와 테스팅",
+    "section": "2.1",
+    "sectionTitle": "Testing in the Context of a Software Development Lifecycle",
+    "learningObjective": "FL-2.1.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "V-모델에서 통합 테스트(Integration Testing)가 검증하는 대상으로 가장 적합한 것은?",
+    "options": [
+      { "id": "A", "text": "요구사항 명세서" },
+      { "id": "B", "text": "상세 설계 또는 컴포넌트 간의 인터페이스" },
+      { "id": "C", "text": "사용자 매뉴얼" },
+      { "id": "D", "text": "코드의 개별 함수" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "통합 테스트는 컴포넌트 간의 인터페이스와 상호작용을 검증한다.",
+    "optionExplanations": {
+      "A": "요구사항 명세서는 시스템 테스트나 인수 테스트에서 검증한다.",
+      "B": "정답. 통합 테스트는 컴포넌트 간 인터페이스를 검증한다.",
+      "C": "사용자 매뉴얼은 테스트 대상이 아닌 참고 문서이다.",
+      "D": "개별 함수는 단위 테스트에서 검증한다."
+    },
+    "tags": ["v-model", "integration-testing", "test-levels"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q005",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "5",
+    "chapter": 2,
+    "chapterTitleEn": "Testing Throughout the Software Development Lifecycle",
+    "chapterTitleKo": "SDLC와 테스팅",
+    "section": "2.2",
+    "sectionTitle": "Test Levels and Test Types",
+    "learningObjective": "FL-2.2.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "다음 중 비기능 테스팅(Non-functional Testing)의 예로 가장 적합한 것은?",
+    "options": [
+      { "id": "A", "text": "로그인 기능이 올바르게 동작하는지 확인" },
+      { "id": "B", "text": "100명의 동시 사용자에 대한 시스템 응답 시간 측정" },
+      { "id": "C", "text": "회원가입 화면의 입력 값 검증" },
+      { "id": "D", "text": "장바구니에 상품 추가 기능 확인" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "비기능 테스팅은 성능, 보안, 사용성 등 시스템의 '어떻게' 동작하는지를 테스트한다.",
+    "optionExplanations": {
+      "A": "기능 테스팅의 예이다.",
+      "B": "정답. 성능 테스팅은 비기능 테스팅의 대표적인 예이다.",
+      "C": "기능 테스팅의 예이다.",
+      "D": "기능 테스팅의 예이다."
+    },
+    "tags": ["non-functional-testing", "performance"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q006",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "6",
+    "chapter": 3,
+    "chapterTitleEn": "Static Testing",
+    "chapterTitleKo": "정적 테스팅",
+    "section": "3.1",
+    "sectionTitle": "Static Testing Basics",
+    "learningObjective": "FL-3.1.1",
+    "kLevel": "K1",
+    "points": 1,
+    "questionText": "다음 중 정적 테스팅(Static Testing)에 해당하는 활동은?",
+    "options": [
+      { "id": "A", "text": "코드를 실행하여 결과를 확인하는 것" },
+      { "id": "B", "text": "코드를 실행하지 않고 리뷰하는 것" },
+      { "id": "C", "text": "자동화된 회귀 테스트를 실행하는 것" },
+      { "id": "D", "text": "탐색적 테스트를 수행하는 것" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "정적 테스팅은 코드를 실행하지 않고 작업 산출물을 검토하여 결함을 발견하는 방법이다.",
+    "optionExplanations": {
+      "A": "이것은 동적 테스팅이다.",
+      "B": "정답. 정적 테스팅은 코드를 실행하지 않는다.",
+      "C": "자동화 테스트 실행은 동적 테스팅이다.",
+      "D": "탐색적 테스트는 동적 테스팅 기법이다."
+    },
+    "tags": ["static-testing", "review"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q007",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "7",
+    "chapter": 4,
+    "chapterTitleEn": "Test Analysis and Design",
+    "chapterTitleKo": "테스트 분석과 설계",
+    "section": "4.2",
+    "sectionTitle": "Black-Box Test Techniques",
+    "learningObjective": "FL-4.2.1",
+    "kLevel": "K3",
+    "points": 1,
+    "questionText": "입력 필드가 1~100 사이의 정수를 허용할 때, 동등 분할(Equivalence Partitioning)에 의한 유효 파티션과 무효 파티션의 수는?",
+    "options": [
+      { "id": "A", "text": "유효 1개, 무효 1개" },
+      { "id": "B", "text": "유효 1개, 무효 2개" },
+      { "id": "C", "text": "유효 2개, 무효 2개" },
+      { "id": "D", "text": "유효 2개, 무효 1개" }
+    ],
+    "correctAnswers": ["B"],
+    "explanation": "유효 파티션: 1~100 (1개). 무효 파티션: 0 이하 (1개), 101 이상 (1개). 총 유효 1개, 무효 2개이다.",
+    "optionExplanations": {
+      "A": "무효 파티션은 양쪽 경계 밖으로 2개이다.",
+      "B": "정답. 유효 1개 (1-100), 무효 2개 (≤0, ≥101).",
+      "C": "유효 파티션은 1개이다.",
+      "D": "유효 파티션은 1개이다."
+    },
+    "tags": ["equivalence-partitioning", "black-box"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q008",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "8",
+    "chapter": 4,
+    "chapterTitleEn": "Test Analysis and Design",
+    "chapterTitleKo": "테스트 분석과 설계",
+    "section": "4.2",
+    "sectionTitle": "Black-Box Test Techniques",
+    "learningObjective": "FL-4.2.2",
+    "kLevel": "K3",
+    "points": 1,
+    "questionText": "입력 필드가 1~100 사이의 정수를 허용할 때, 경계값 분석(BVA, 2-value)의 경계값은?",
+    "options": [
+      { "id": "A", "text": "0, 1, 100, 101" },
+      { "id": "B", "text": "1, 50, 100" },
+      { "id": "C", "text": "0, 50, 101" },
+      { "id": "D", "text": "1, 100" }
+    ],
+    "correctAnswers": ["A"],
+    "explanation": "2-value BVA에서는 각 경계의 양쪽 값을 선택한다. 하한 경계: 0, 1. 상한 경계: 100, 101. 총 4개의 경계값이다.",
+    "optionExplanations": {
+      "A": "정답. 2-value BVA는 경계와 경계 바로 옆 값을 선택한다.",
+      "B": "50은 경계값이 아니다.",
+      "C": "50은 경계값이 아니며, 1과 100이 빠져있다.",
+      "D": "경계 바깥 값 (0, 101)도 포함해야 한다."
+    },
+    "tags": ["boundary-value-analysis", "black-box"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q009",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "9",
+    "chapter": 5,
+    "chapterTitleEn": "Managing the Test Activities",
+    "chapterTitleKo": "테스트 활동 관리",
+    "section": "5.1",
+    "sectionTitle": "Test Planning",
+    "learningObjective": "FL-5.1.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "테스트 계획서에 일반적으로 포함되지 않는 항목은?",
+    "options": [
+      { "id": "A", "text": "테스트 범위와 목적" },
+      { "id": "B", "text": "테스트 일정과 자원" },
+      { "id": "C", "text": "소스 코드의 상세 설계 문서" },
+      { "id": "D", "text": "리스크와 대응 방안" }
+    ],
+    "correctAnswers": ["C"],
+    "explanation": "테스트 계획서에는 테스트 범위, 접근법, 자원, 일정, 리스크 등이 포함된다. 소스 코드 상세 설계는 개발 산출물이다.",
+    "optionExplanations": {
+      "A": "테스트 계획서의 핵심 항목이다.",
+      "B": "테스트 계획서에 포함되는 항목이다.",
+      "C": "정답. 소스 코드 상세 설계는 테스트 계획서 항목이 아니다.",
+      "D": "리스크 관리는 테스트 계획의 중요한 부분이다."
+    },
+    "tags": ["test-planning", "test-plan"],
+    "isMultipleAnswer": false
+  },
+  {
+    "id": "q010",
+    "source": "Sample Exam A",
+    "examSet": "A",
+    "questionNumber": "10",
+    "chapter": 6,
+    "chapterTitleEn": "Test Tools",
+    "chapterTitleKo": "테스트 도구",
+    "section": "6.1",
+    "sectionTitle": "Tool Support for Testing",
+    "learningObjective": "FL-6.1.1",
+    "kLevel": "K2",
+    "points": 1,
+    "questionText": "테스트 자동화 도구 도입 시 고려해야 할 리스크로 올바른 것을 모두 고르시오.",
+    "options": [
+      { "id": "A", "text": "도구에 대한 비현실적인 기대" },
+      { "id": "B", "text": "도구 유지보수 비용 과소평가" },
+      { "id": "C", "text": "테스트 실행 속도 향상" },
+      { "id": "D", "text": "도구 벤더 종속성" }
+    ],
+    "correctAnswers": ["A", "B", "D"],
+    "explanation": "테스트 자동화 도구 도입 시 비현실적 기대, 유지보수 비용 과소평가, 벤더 종속성 등이 리스크이다. 실행 속도 향상은 리스크가 아닌 이점이다.",
+    "optionExplanations": {
+      "A": "정답. 도구에 대한 과도한 기대는 대표적 리스크이다.",
+      "B": "정답. 스크립트 유지보수 비용을 흔히 과소평가한다.",
+      "C": "이것은 리스크가 아닌 도구의 이점이다.",
+      "D": "정답. 특정 벤더에 종속되는 것은 리스크이다."
+    },
+    "tags": ["test-tools", "automation-risks"],
+    "isMultipleAnswer": true
+  }
+]

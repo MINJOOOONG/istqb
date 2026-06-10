@@ -58,7 +58,8 @@ function isNoise(line) {
     trimmed === '' ||
     trimmed.startsWith('Korean Software Testing Qualifications Board') ||
     trimmed.startsWith('www.kstqb.org') ||
-    /^Page \d+/.test(trimmed)
+    /^Page \d+/.test(trimmed) ||
+    /^\d+ of \d+$/.test(trimmed)
   );
 }
 
@@ -122,9 +123,11 @@ function parseQuestions(text) {
 }
 
 function parseAnswerKey(text) {
-  const marker = text.indexOf('정답표');
-  const detailMarker = text.indexOf('\n정답\n');
-  const keyText = text.slice(marker >= 0 ? marker : 0, detailMarker >= 0 ? detailMarker : undefined);
+  const normalized = text.replace(/\f/g, '\n');
+  const marker = normalized.indexOf('정답표');
+  const detailMatch = normalized.match(/\n정답\s*\n/);
+  const detailMarker = detailMatch ? detailMatch.index : -1;
+  const keyText = normalized.slice(marker >= 0 ? marker : 0, detailMarker >= 0 ? detailMarker : undefined);
   const answers = new Map();
   const pattern = /(\d{1,2})\s+([a-e](?:,\s*[a-e])?)\s+(FL-\d+\.\d+\.\d+)\s+(K\d)\s+(\d)/g;
   let match;
@@ -143,10 +146,265 @@ function parseAnswerKey(text) {
   return answers;
 }
 
-function questionToRecord(examSet, question, answer) {
+/**
+ * Parse detailed answer explanations from the "정답" section of the answer PDF.
+ * Returns a Map<number, { optionExplanations: Record<string, string>, explanation: string }>
+ */
+function parseDetailedAnswers(text) {
+  // Find the start of the detailed answers section (after "정답표", starts with "정답")
+  // The text may have \f (form feed) characters, so we normalize first
+  const normalized = text.replace(/\f/g, '\n');
+  // Look for standalone "정답" line (not "정답표" or "정답이" etc.)
+  const detailMatch = normalized.match(/\n정답\s*\n/);
+  const detailMarker = detailMatch ? detailMatch.index : -1;
+  if (detailMarker < 0) return new Map();
+
+  // Find the end - either "부록" or "추가 샘플 문제" section
+  const appendixMarker = normalized.indexOf('부록');
+  const additionalMarker = normalized.indexOf('추가 샘플 문제');
+  let endMarker = normalized.length;
+  if (appendixMarker > detailMarker) endMarker = Math.min(endMarker, appendixMarker);
+  if (additionalMarker > detailMarker) endMarker = Math.min(endMarker, additionalMarker);
+
+  const detailText = normalized.slice(detailMarker, endMarker);
+  const lines = detailText.split('\n').map(normalizeLine);
+
+  // Clean each line: remove trailing metadata (FL-x.x.x, K-level, points) from layout columns
+  const cleaned = lines.map((line) => {
+    // Remove trailing "FL-x.x.x    Kx     x" metadata from the right side of layout
+    return line.replace(/\s+FL-\d+\.\d+\.\d+\s+K\d\s+\d\s*$/, '').replace(/[ \t]+$/g, '');
+  });
+
+  // Filter out noise lines, page headers, table headers
+  const filtered = cleaned.filter((line) => {
+    const trimmed = line.trim();
+    if (trimmed === '') return false;
+    if (trimmed.startsWith('Korean Software Testing Qualifications Board')) return false;
+    if (trimmed.startsWith('www.kstqb.org')) return false;
+    if (/^\d+ of \d+$/.test(trimmed)) return false;
+    if (trimmed === '정답') return false;
+    // Skip table header rows
+    if (trimmed.startsWith('문제 번호')) return false;
+    if (trimmed.startsWith('(#)')) return false;
+    if (/^정답\s+해설/.test(trimmed)) return false;
+    if (/^학습목표$/.test(trimmed)) return false;
+    if (/^\(LO\)$/.test(trimmed)) return false;
+    if (/^K-레벨\s+배점$/.test(trimmed)) return false;
+    return true;
+  });
+
+  const result = new Map();
+
+  // Parse question blocks - they start with a question number followed by answer letter(s)
+  // Pattern: "      1              c       a) 정답이 아닙니다..."
+  // or:      "      6           a, e       a) 정답입니다..."
+  let currentQuestion = null;
+  let currentOptionId = null;
+  let currentOptionLines = [];
+  let preambleLines = [];
+
+  function flushOption() {
+    if (currentQuestion && currentOptionId) {
+      const text = currentOptionLines
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (text) {
+        if (!result.has(currentQuestion)) {
+          result.set(currentQuestion, { optionExplanations: {}, preamble: '' });
+        }
+        result.get(currentQuestion).optionExplanations[currentOptionId] = text;
+      }
+    }
+    currentOptionId = null;
+    currentOptionLines = [];
+  }
+
+  function flushPreamble() {
+    if (currentQuestion && preambleLines.length > 0) {
+      const text = preambleLines
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (text && result.has(currentQuestion)) {
+        result.get(currentQuestion).preamble = text;
+      }
+    }
+    preambleLines = [];
+  }
+
+  for (const line of filtered) {
+    const trimmed = line.trim();
+
+    // Check for new question number line
+    // Pattern: number + answer + optional rest text
+    // e.g., "      1              c       a) 정답이 아닙니다..."
+    // e.g., "      13             a       각 항목을 살펴보면:"
+    // e.g., "      23             c" (no text after answer)
+    const questionMatch = trimmed.match(
+      /^(\d{1,2})\s+([a-e](?:,\s*[a-e])?)\s*(.*)$/
+    );
+
+    if (questionMatch) {
+      const num = Number(questionMatch[1]);
+      // Validate it's a reasonable question number transition
+      if (num >= 1 && num <= 40 && (!currentQuestion || num > currentQuestion || num === 1)) {
+        // Flush previous
+        flushOption();
+        flushPreamble();
+        currentQuestion = num;
+
+        if (!result.has(num)) {
+          result.set(num, { optionExplanations: {}, preamble: '' });
+        }
+
+        const rest = questionMatch[3].trim();
+        if (rest) {
+          // Check if rest starts with an option like "a) ..."
+          const optMatch = rest.match(/^([a-e])\)\s+(.*)$/);
+          if (optMatch) {
+            currentOptionId = optMatch[1];
+            currentOptionLines = [optMatch[2]];
+          } else {
+            // It's preamble text (explanation context before options)
+            preambleLines = [rest];
+          }
+        }
+        continue;
+      }
+    }
+
+    // Check for option line: "a) ...", "b) ...", etc.
+    const optionLineMatch = trimmed.match(/^([a-e])\)\s+(.*)$/);
+    if (optionLineMatch && currentQuestion) {
+      flushOption();
+      currentOptionId = optionLineMatch[1];
+      currentOptionLines = [optionLineMatch[2]];
+      continue;
+    }
+
+    // Check for roman numeral explanations (i., ii., iii., iv., v.)
+    // These are part of preamble or current option context
+    const romanMatch = trimmed.match(/^([ivx]+)\.\s+(.*)$/);
+    if (romanMatch && currentQuestion) {
+      if (currentOptionId) {
+        // Part of current option
+        currentOptionLines.push(trimmed);
+      } else {
+        preambleLines.push(trimmed);
+      }
+      continue;
+    }
+
+    // Check for bullet points (•)
+    if (trimmed.startsWith('•') && currentQuestion) {
+      if (currentOptionId) {
+        currentOptionLines.push(trimmed);
+      } else {
+        preambleLines.push(trimmed);
+      }
+      continue;
+    }
+
+    // Skip metadata that appears on question header lines (FL-x.x.x, Kx, numbers)
+    if (/^FL-\d+\.\d+\.\d+/.test(trimmed)) continue;
+    if (/^K\d\s+\d$/.test(trimmed)) continue;
+    if (/^K\d$/.test(trimmed)) continue;
+
+    // "따라서:" or "따라서," lines - these are preamble/transition text
+    if (trimmed === '따라서:' || trimmed === '따라서,') {
+      if (currentOptionId) {
+        flushOption();
+      }
+      preambleLines.push(trimmed);
+      continue;
+    }
+
+    // Continuation line
+    if (currentQuestion) {
+      if (currentOptionId) {
+        currentOptionLines.push(trimmed);
+      } else {
+        preambleLines.push(trimmed);
+      }
+    }
+  }
+
+  // Flush last
+  flushOption();
+  flushPreamble();
+
+  return result;
+}
+
+// Load summaries for keyConcepts and reviewTip matching
+let summaries = [];
+const summariesPath = join(root, 'src/data/summaries.json');
+if (existsSync(summariesPath)) {
+  summaries = JSON.parse(readFileSync(summariesPath, 'utf8'));
+}
+
+function findSummary(learningObjective) {
+  return summaries.find((s) => s.learningObjective === learningObjective);
+}
+
+function questionToRecord(examSet, question, answer, detailedAnswer) {
   const chapter = Number(answer.learningObjective.match(/^FL-(\d+)/)?.[1] ?? 0);
   const [chapterTitleEn, chapterTitleKo] = chapters[chapter] ?? ['ISTQB CTFL', 'ISTQB CTFL'];
-  const correctLabel = answer.correctAnswers.map((id) => id.toUpperCase()).join(', ');
+  const section = answer.learningObjective.replace(/^FL-/, '').replace(/\.\d+$/, '');
+
+  // Build optionExplanations from detailed answers
+  let optionExplanations;
+  let explanation;
+
+  if (detailedAnswer && Object.keys(detailedAnswer.optionExplanations).length > 0) {
+    optionExplanations = {};
+    for (const opt of question.options) {
+      optionExplanations[opt.id] = detailedAnswer.optionExplanations[opt.id] || '';
+    }
+
+    // Use correct answer's explanation as the main explanation
+    const correctExplanations = answer.correctAnswers
+      .map((id) => detailedAnswer.optionExplanations[id])
+      .filter(Boolean);
+
+    if (detailedAnswer.preamble) {
+      explanation = detailedAnswer.preamble;
+      if (correctExplanations.length > 0) {
+        explanation += '\n\n' + correctExplanations.join('\n');
+      }
+    } else if (correctExplanations.length > 0) {
+      explanation = correctExplanations.join('\n');
+    } else {
+      const correctLabel = answer.correctAnswers.map((id) => id.toUpperCase()).join(', ');
+      explanation = `샘플문제 ${examSet} 정답표 기준 정답은 ${correctLabel}입니다.`;
+    }
+  } else {
+    const correctLabel = answer.correctAnswers.map((id) => id.toUpperCase()).join(', ');
+    explanation = `샘플문제 ${examSet} 정답표 기준 정답은 ${correctLabel}입니다.`;
+    optionExplanations = Object.fromEntries(
+      question.options.map((option) => [
+        option.id,
+        answer.correctAnswers.includes(option.id)
+          ? '정답표 기준 정답입니다.'
+          : '정답표 기준 정답이 아닙니다.',
+      ])
+    );
+  }
+
+  // Build keyConcepts and reviewTip from summaries
+  const summary = findSummary(answer.learningObjective);
+  const keyConcepts = summary?.keywords ?? [];
+  const reviewTip = summary?.examPoint ?? '';
+
+  // Build syllabusReference
+  const chapterNum = String(chapter);
+  const syllabusReference = {
+    chapter: `Chapter ${chapterNum}`,
+    section,
+    title: summary?.sectionTitle ?? chapterTitleKo,
+    learningObjective: answer.learningObjective,
+  };
 
   return {
     id: `ctfl-${examSet.toLowerCase()}-${String(question.number).padStart(2, '0')}`,
@@ -156,7 +414,7 @@ function questionToRecord(examSet, question, answer) {
     chapter,
     chapterTitleEn,
     chapterTitleKo,
-    section: answer.learningObjective.replace(/^FL-/, '').replace(/\.\d+$/, ''),
+    section,
     sectionTitle: answer.learningObjective,
     learningObjective: answer.learningObjective,
     kLevel: answer.kLevel,
@@ -164,17 +422,13 @@ function questionToRecord(examSet, question, answer) {
     questionText: question.questionText,
     options: question.options,
     correctAnswers: answer.correctAnswers,
-    explanation: `샘플문제 ${examSet} 정답표 기준 정답은 ${correctLabel}입니다.`,
-    optionExplanations: Object.fromEntries(
-      question.options.map((option) => [
-        option.id,
-        answer.correctAnswers.includes(option.id)
-          ? '정답표 기준 정답입니다.'
-          : '정답표 기준 정답이 아닙니다.',
-      ])
-    ),
+    explanation,
+    optionExplanations,
     tags: [`sample-${examSet.toLowerCase()}`, answer.learningObjective],
     isMultipleAnswer: answer.correctAnswers.length > 1,
+    keyConcepts,
+    reviewTip,
+    syllabusReference,
   };
 }
 
@@ -185,6 +439,7 @@ for (const exam of exams) {
   const answerText = pdfToText(exam.answerPdf);
   const questions = parseQuestions(questionText);
   const answers = parseAnswerKey(answerText);
+  const detailedAnswers = parseDetailedAnswers(answerText);
 
   if (questions.length !== 40) {
     throw new Error(`Expected 40 questions for ${exam.set}, got ${questions.length}`);
@@ -193,10 +448,13 @@ for (const exam of exams) {
     throw new Error(`Expected 40 answers for ${exam.set}, got ${answers.size}`);
   }
 
+  console.log(`Exam ${exam.set}: parsed ${detailedAnswers.size} detailed answers`);
+
   for (const question of questions) {
     const answer = answers.get(question.number);
     if (!answer) throw new Error(`Missing answer for ${exam.set} #${question.number}`);
-    allQuestions.push(questionToRecord(exam.set, question, answer));
+    const detailed = detailedAnswers.get(question.number);
+    allQuestions.push(questionToRecord(exam.set, question, answer, detailed));
   }
 }
 
@@ -207,3 +465,18 @@ writeFileSync(
 );
 
 console.log(`Wrote ${allQuestions.length} questions`);
+
+// Verify detailed explanations were extracted
+let withDetails = 0;
+let withoutDetails = 0;
+for (const q of allQuestions) {
+  const hasDetail = Object.values(q.optionExplanations).some(
+    (v) => v && v !== '정답표 기준 정답입니다.' && v !== '정답표 기준 정답이 아닙니다.'
+  );
+  if (hasDetail) withDetails++;
+  else withoutDetails++;
+}
+console.log(`With detailed explanations: ${withDetails}/${allQuestions.length}`);
+if (withoutDetails > 0) {
+  console.log(`Without detailed explanations: ${withoutDetails}`);
+}

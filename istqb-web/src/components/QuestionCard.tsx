@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import type { Question } from '../types/question';
 import OptionButton from './OptionButton';
+import QuestionResult from './QuestionResult';
 import { checkAnswer } from '../utils/quiz';
-import { recordAnswer, removeWrongId, getWrongIds } from '../utils/storage';
+import { recordAnswer, removeWrongId, getWrongIds, saveWrongNote } from '../utils/storage';
 
 interface Props {
   question: Question;
@@ -36,13 +37,38 @@ export default function QuestionCard({ question, index, total, onNext, isLast }:
     const correct = checkAnswer(question, selected);
     setIsCorrect(correct);
     setRevealed(true);
-    recordAnswer(question.id, correct);
+    recordAnswer(question.id, correct, {
+      selectedAnswers: [...selected],
+      correctAnswers: question.correctAnswers,
+      chapter: question.chapter,
+      section: question.section,
+    });
     window.dispatchEvent(new Event('wrongUpdated'));
   };
 
   const handleRemoveFromWrong = () => {
     removeWrongId(question.id);
     window.dispatchEvent(new Event('wrongUpdated'));
+  };
+
+  const handleManualSave = () => {
+    saveWrongNote({
+      questionId: question.id,
+      selectedAnswers: [...selected],
+      correctAnswers: question.correctAnswers,
+      isCorrect: false,
+      date: new Date().toISOString(),
+      chapter: question.chapter,
+      section: question.section,
+      manualSave: true,
+    });
+    window.dispatchEvent(new Event('wrongUpdated'));
+  };
+
+  const handleRetry = () => {
+    setSelected(new Set());
+    setRevealed(false);
+    setIsCorrect(false);
   };
 
   const isInWrong = getWrongIds().includes(question.id);
@@ -81,29 +107,17 @@ export default function QuestionCard({ question, index, total, onNext, isLast }:
           정답 확인
         </button>
       ) : (
-        <div className="result-section">
-          <div className={`result-banner ${isCorrect ? 'correct' : 'wrong'}`}>
-            {isCorrect ? '✓ 정답입니다!' : '✗ 오답입니다'}
-          </div>
-
-          {question.explanation && (
-            <div className="explanation">{question.explanation}</div>
-          )}
-
-          {!isCorrect && (
-            <p className="wrong-saved">오답노트에 저장됨</p>
-          )}
-
-          {revealed && isCorrect && isInWrong && (
-            <button className="btn-remove-wrong" onClick={handleRemoveFromWrong}>
-              오답노트에서 제거
-            </button>
-          )}
-
-          <button className="btn-primary" onClick={onNext}>
-            {isLast ? '완료' : '다음 문제'}
-          </button>
-        </div>
+        <QuestionResult
+          question={question}
+          selectedAnswers={[...selected]}
+          isCorrect={isCorrect}
+          isInWrong={isInWrong}
+          onNext={onNext}
+          onRetry={handleRetry}
+          onSaveToWrongNote={!isCorrect ? handleManualSave : undefined}
+          onRemoveFromWrongNote={isCorrect && isInWrong ? handleRemoveFromWrong : undefined}
+          isLast={isLast}
+        />
       )}
     </div>
   );

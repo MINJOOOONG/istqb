@@ -567,8 +567,8 @@ body {
 }
 
 .result-banner.wrong {
-  color: var(--red);
-  background: rgba(220, 38, 38, 0.08);
+  color: #b45309;
+  background: rgba(251, 191, 36, 0.12);
 }
 
 .explanation {
@@ -806,4 +806,384 @@ body {
 /* Quiz page */
 .quiz-page {
   padding-top: 12px;
+}
+
+/* ========== QuestionResult ========== */
+.question-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.result-compare {
+  display: flex;
+  gap: 8px;
+}
+
+.compare-item {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.compare-item .compare-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.compare-item .compare-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.compare-item.my-answer {
+  background: rgba(251, 191, 36, 0.1);
+  color: #b45309;
+}
+
+.compare-item.correct-answer {
+  background: rgba(22, 163, 74, 0.08);
+  color: var(--green);
+}
+
+.result-section-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--light-gray);
+}
+
+.result-section-card.wrong-reason {
+  background: rgba(251, 191, 36, 0.08);
+  border-left: 3px solid #f59e0b;
+}
+
+.result-section-card.correct-reason {
+  background: rgba(22, 163, 74, 0.06);
+  border-left: 3px solid var(--green);
+}
+
+.result-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.result-section-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  word-break: keep-all;
+  margin-bottom: 4px;
+}
+
+.result-section-text strong {
+  font-weight: 700;
+  color: #111;
+}
+
+/* Toggle (접기/펼치기) */
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  cursor: pointer;
+}
+
+.toggle-icon {
+  font-size: 11px;
+  color: var(--gray);
+}
+
+.toggle-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-explanation-row {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.option-explanation-row.is-correct {
+  background: rgba(22, 163, 74, 0.06);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.option-explanation-id {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.correct-mark {
+  color: var(--green);
+}
+
+.option-explanation-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #444;
+  word-break: keep-all;
+  margin: 0;
+}
+
+/* Syllabus reference in result */
+.syllabus-ref .syllabus-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.syllabus-section {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.syllabus-lo {
+  font-size: 12px;
+  color: var(--gray);
+}
+
+/* Review tip */
+.result-section-card.review-tip {
+  background: rgba(234, 88, 12, 0.05);
+  border-left: 3px solid var(--orange);
+}
+
+.tip-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 8px;
+  word-break: keep-all;
+}
+
+.key-concepts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Result actions */
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.result-action-btn {
+  padding: 12px;
+  font-size: 15px;
+}
+
+.wrong-saved {
+  font-size: 13px;
+  color: #b45309;
+  text-align: center;
+}
+
+/* ========== Wrong Note Filters ========== */
+.wrong-filters {
+  margin-bottom: 12px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.filter-chip {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--gray);
+  cursor: pointer;
+}
+
+.filter-chip.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.sort-row {
+  display: flex;
+  align-items: center;
+}
+
+.sort-select {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  outline: none;
+}
+
+.filter-result-count {
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 10px;
+}
+
+/* Wrong note badges */
+.wrong-count-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(251, 191, 36, 0.15);
+  color: #b45309;
+  margin-left: 4px;
+}
+
+.retry-correct-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--green);
+  margin-left: 4px;
+}
+
+/* Wrong item expand */
+.wrong-item-text-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wrong-item-text-btn .wrong-item-text {
+  flex: 1;
+}
+
+.wrong-item-text-btn .toggle-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.wrong-item-detail {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ========== Chapter Stats ========== */
+.chapter-stats {
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-item {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stat-chapter {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-rate {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.stat-rate.low {
+  color: #b45309;
+}
+
+.stat-bar-bg {
+  height: 6px;
+  background: var(--light-gray);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.stat-bar-fill.high {
+  background: var(--green);
+}
+
+.stat-bar-fill.mid {
+  background: var(--blue);
+}
+
+.stat-bar-fill.low {
+  background: #f59e0b;
+}
+
+.stat-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.priority-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(251, 191, 36, 0.15);
+  color: #b45309;
 }

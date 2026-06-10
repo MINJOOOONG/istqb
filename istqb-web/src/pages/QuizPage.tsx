@@ -14,6 +14,7 @@ export default function QuizPage() {
   const mode = searchParams.get('mode') || 'all';
   const chapter = Number(searchParams.get('chapter') || 0);
   const set = searchParams.get('set') || '';
+  const questionId = searchParams.get('questionId') || '';
 
   const quizQuestions = useMemo(() => {
     switch (mode) {
@@ -34,11 +35,15 @@ export default function QuizPage() {
         const wrongIds = new Set(getWrongIds());
         return allQuestions.filter((q) => wrongIds.has(q.id));
       }
+      case 'single': {
+        const found = allQuestions.filter((q) => q.id === questionId);
+        return found;
+      }
       case 'all':
       default:
         return shuffleArray(allQuestions);
     }
-  }, [mode, chapter, set]);
+  }, [mode, chapter, set, questionId]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import questions from '../data/questions.json';
 import type { Question } from '../types/question';
 import ChapterSelector from '../components/ChapterSelector';
+import ChapterStatsComponent from '../components/ChapterStats';
+import { getChapterStatsWithQuestions } from '../utils/storage';
 
 const allQuestions = questions as Question[];
 
@@ -69,6 +71,8 @@ export default function PracticePage() {
         chapters={chapters}
         onSelect={(ch) => navigate(`/quiz?mode=chapter&chapter=${ch}`)}
       />
+
+      <ChapterStatsComponent stats={getChapterStatsWithQuestions(allQuestions)} />
     </div>
   );
 }
