@@ -67,6 +67,7 @@ function cleanText(lines) {
   return lines
     .map(normalizeLine)
     .filter((line) => !isNoise(line))
+    .map((line) => line.trim())
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -98,19 +99,25 @@ function parseQuestions(text) {
   return blocks
     .filter((block) => block.number >= 1 && block.number <= 40)
     .map((block) => {
+      // Truncate block lines at appendix boundary
+      const appendixIdx = block.lines.findIndex((line) =>
+        /부록[:\s]|Additional Questions|^A\d+\.\s/.test(line.trim())
+      );
+      const lines = appendixIdx >= 0 ? block.lines.slice(0, appendixIdx) : block.lines;
+
       const optionStarts = [];
-      block.lines.forEach((line, index) => {
+      lines.forEach((line, index) => {
         if (/^\s*[a-e]\.\s+/.test(line)) optionStarts.push(index);
       });
 
-      const questionEnd = optionStarts[0] ?? block.lines.length;
-      const questionText = cleanText(block.lines.slice(0, questionEnd));
+      const questionEnd = optionStarts[0] ?? lines.length;
+      const questionText = cleanText(lines.slice(0, questionEnd));
       const options = optionStarts.map((start, optionIndex) => {
-        const end = optionStarts[optionIndex + 1] ?? block.lines.length;
-        const first = block.lines[start];
+        const end = optionStarts[optionIndex + 1] ?? lines.length;
+        const first = lines[start];
         const id = first.trim().slice(0, 1).toLowerCase();
         const firstText = first.replace(/^\s*[a-e]\.\s+/, '');
-        const text = cleanText([firstText, ...block.lines.slice(start + 1, end)]);
+        const text = cleanText([firstText, ...lines.slice(start + 1, end)]);
         return { id, text };
       });
 
