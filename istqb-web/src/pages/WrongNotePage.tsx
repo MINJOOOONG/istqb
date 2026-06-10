@@ -183,7 +183,6 @@ export default function WrongNotePage() {
                   <div className="wrong-item-detail">
                     <QuestionResult
                       question={q}
-                      selectedAnswers={note.selectedAnswers}
                       isCorrect={false}
                       isInWrong={true}
                       onNext={() => setExpandedId(null)}
