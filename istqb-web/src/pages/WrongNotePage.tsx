@@ -4,6 +4,7 @@ import questions from '../data/questions.json';
 import type { Question } from '../types/question';
 import { getWrongNotes, removeWrongNote, type WrongNoteRecord } from '../utils/storage';
 import QuestionResult from '../components/QuestionResult';
+import { getQuestionSourceInfo } from '../utils/sourcePdfs';
 
 const allQuestions = questions as Question[];
 const questionMap = new Map(allQuestions.map((q) => [q.id, q]));
@@ -159,6 +160,7 @@ export default function WrongNotePage() {
             const q = questionMap.get(note.questionId);
             if (!q) return null;
             const isExpanded = expandedId === note.questionId;
+            const sourceInfo = getQuestionSourceInfo(q);
 
             return (
               <div key={note.questionId} className="wrong-item">
@@ -200,6 +202,11 @@ export default function WrongNotePage() {
                     <button className="btn-small" onClick={() => handleToggleExpand(note.questionId)}>
                       해설 보기
                     </button>
+                    {sourceInfo && (
+                      <button className="btn-small" onClick={() => navigate(sourceInfo.url)}>
+                        원본 보기
+                      </button>
+                    )}
                     <button className="btn-small danger" onClick={() => handleRemove(note.questionId)}>
                       제거
                     </button>

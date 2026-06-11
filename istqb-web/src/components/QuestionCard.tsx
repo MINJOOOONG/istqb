@@ -4,6 +4,7 @@ import OptionButton from './OptionButton';
 import QuestionResult from './QuestionResult';
 import { checkAnswer } from '../utils/quiz';
 import { recordAnswer, removeWrongId, getWrongIds, saveWrongNote } from '../utils/storage';
+import { getQuestionSourceInfo } from '../utils/sourcePdfs';
 
 // --- QuestionCard component ---
 
@@ -81,6 +82,7 @@ export default function QuestionCard({
 
   const isInWrong = getWrongIds().includes(question.id);
   const questionSourceLabel = `실러버스 ${question.examSet.toUpperCase()} ${question.questionNumber}번`;
+  const sourceInfo = getQuestionSourceInfo(question);
 
   return (
     <div className="question-card">
@@ -95,6 +97,11 @@ export default function QuestionCard({
           {question.kLevel}
         </span>
         <span className="question-source-badge">{questionSourceLabel}</span>
+        {sourceInfo && (
+          <a className="source-link-btn" href={sourceInfo.url}>
+            원본 보기
+          </a>
+        )}
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 

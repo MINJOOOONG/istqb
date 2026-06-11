@@ -44,12 +44,6 @@ export default function PracticePage() {
         <button className="btn-primary full" onClick={() => navigate('/quiz?mode=random10')}>
           빠른 10문제
         </button>
-        <button className="btn-secondary full" onClick={() => navigate('/quiz?mode=all')}>
-          전체 문제 풀기
-        </button>
-        <button className="btn-secondary full" onClick={() => navigate('/quiz?mode=wrongRandom')}>
-          오답 랜덤 풀기
-        </button>
       </div>
 
       <h2>모의고사</h2>

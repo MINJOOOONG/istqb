@@ -1,4 +1,5 @@
 import type { QuestionOption } from '../types/question';
+import { getConciseExplanation } from '../utils/explanations';
 
 interface Props {
   option: QuestionOption;
@@ -18,6 +19,7 @@ export default function OptionButton({ option, selected, revealed, isCorrect, ex
   } else if (selected) {
     className += ' selected';
   }
+  const conciseExplanation = explanation ? getConciseExplanation(explanation) : undefined;
 
   return (
     <button
@@ -29,8 +31,8 @@ export default function OptionButton({ option, selected, revealed, isCorrect, ex
       <span className="option-id">{option.id.toUpperCase()}</span>
       <span className="option-body">
         <span className="option-text">{option.text}</span>
-        {revealed && explanation && (
-          <span className="option-explanation">{explanation}</span>
+        {revealed && conciseExplanation && (
+          <span className="option-explanation">{conciseExplanation}</span>
         )}
       </span>
       {revealed && (isCorrect || selected) && (
