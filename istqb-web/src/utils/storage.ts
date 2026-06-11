@@ -1,6 +1,7 @@
 const WRONG_KEY = 'istqb_wrong_ids';
 const ANSWERED_KEY = 'istqb_answered';
 const WRONG_NOTES_KEY = 'istqb_wrong_notes';
+const CHAPTER_PROGRESS_KEY = 'istqb_chapter_quiz_progress';
 
 // --- Legacy interfaces (for migration) ---
 interface LegacyAnswerRecord {
@@ -171,6 +172,17 @@ export interface AnswerRecord {
   correct: boolean;
 }
 
+export interface ChapterQuizProgress {
+  chapter: number;
+  questionIds: string[];
+  currentIndex: number;
+  answerStates?: Record<string, {
+    selectedAnswers: string[];
+    revealed: boolean;
+    isCorrect: boolean;
+  }>;
+}
+
 export function getAnswered(): AnswerRecord[] {
   try {
     return JSON.parse(localStorage.getItem(ANSWERED_KEY) || '[]');
@@ -227,6 +239,38 @@ export function recordAnswer(
       saveAllWrongNotes(notes);
     }
   }
+}
+
+export function clearAnswerStats() {
+  localStorage.removeItem(ANSWERED_KEY);
+}
+
+function getAllChapterQuizProgress(): Record<string, ChapterQuizProgress> {
+  try {
+    return JSON.parse(localStorage.getItem(CHAPTER_PROGRESS_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveAllChapterQuizProgress(records: Record<string, ChapterQuizProgress>) {
+  localStorage.setItem(CHAPTER_PROGRESS_KEY, JSON.stringify(records));
+}
+
+export function getChapterQuizProgress(chapter: number): ChapterQuizProgress | undefined {
+  return getAllChapterQuizProgress()[String(chapter)];
+}
+
+export function saveChapterQuizProgress(progress: ChapterQuizProgress) {
+  const records = getAllChapterQuizProgress();
+  records[String(progress.chapter)] = progress;
+  saveAllChapterQuizProgress(records);
+}
+
+export function clearChapterQuizProgress(chapter: number) {
+  const records = getAllChapterQuizProgress();
+  delete records[String(chapter)];
+  saveAllChapterQuizProgress(records);
 }
 
 // --- Chapter Stats ---
