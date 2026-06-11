@@ -9,12 +9,20 @@ import { normalizeExtractedQuestionText } from '../utils/text';
 
 // --- QuestionCard component ---
 
+export interface QuestionAnswerState {
+  selectedAnswers: string[];
+  revealed: boolean;
+  isCorrect: boolean;
+}
+
 interface Props {
   question: Question;
   index: number;
   total: number;
   onNext: () => void;
   isLast: boolean;
+  answerState?: QuestionAnswerState;
+  onAnswerStateChange?: (state: QuestionAnswerState) => void;
 }
 
 export default function QuestionCard({
@@ -23,10 +31,14 @@ export default function QuestionCard({
   total,
   onNext,
   isLast,
+  answerState,
+  onAnswerStateChange,
 }: Props) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [revealed, setRevealed] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(
+    () => new Set(answerState?.selectedAnswers ?? []),
+  );
+  const [revealed, setRevealed] = useState(answerState?.revealed ?? false);
+  const [isCorrect, setIsCorrect] = useState(answerState?.isCorrect ?? false);
 
   const handleSelect = (optionId: string) => {
     if (revealed) return;
@@ -39,6 +51,11 @@ export default function QuestionCard({
         next.clear();
         next.add(optionId);
       }
+      onAnswerStateChange?.({
+        selectedAnswers: [...next],
+        revealed: false,
+        isCorrect: false,
+      });
       return next;
     });
   };
@@ -47,6 +64,11 @@ export default function QuestionCard({
     const correct = checkAnswer(question, selected);
     setIsCorrect(correct);
     setRevealed(true);
+    onAnswerStateChange?.({
+      selectedAnswers: [...selected],
+      revealed: true,
+      isCorrect: correct,
+    });
     recordAnswer(question.id, correct, {
       selectedAnswers: [...selected],
       correctAnswers: question.correctAnswers,
@@ -79,6 +101,11 @@ export default function QuestionCard({
     setSelected(new Set());
     setRevealed(false);
     setIsCorrect(false);
+    onAnswerStateChange?.({
+      selectedAnswers: [],
+      revealed: false,
+      isCorrect: false,
+    });
   };
 
   const isInWrong = getWrongIds().includes(question.id);

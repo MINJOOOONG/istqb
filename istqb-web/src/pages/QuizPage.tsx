@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import questions from '../data/questions.json';
 import type { Question } from '../types/question';
 import QuestionCard from '../components/QuestionCard';
+import type { QuestionAnswerState } from '../components/QuestionCard';
 import { filterByChapter, pickRandom, shuffleArray } from '../utils/quiz';
 import {
   clearChapterQuizProgress,
@@ -19,12 +20,18 @@ type QuizRouteState = {
     key: string;
     questionIds: string[];
     currentIndex: number;
+    answerStates?: Record<string, QuestionAnswerState>;
   };
 };
 
 type QuizPosition = {
   key: string;
   currentIndex: number;
+};
+
+type QuizAnswerStates = {
+  key: string;
+  values: Record<string, QuestionAnswerState>;
 };
 
 function getQuizKey(mode: string, chapter: number, set: string, questionId: string) {
@@ -67,6 +74,25 @@ function sameQuestionIds(a: string[] | undefined, b: string[]) {
   return Boolean(a && a.length === b.length && a.every((id, index) => id === b[index]));
 }
 
+function sameAnswerStates(
+  a: Record<string, QuestionAnswerState> | undefined,
+  b: Record<string, QuestionAnswerState>,
+) {
+  const aEntries = Object.entries(a ?? {});
+  const bEntries = Object.entries(b);
+  if (aEntries.length !== bEntries.length) return false;
+
+  return bEntries.every(([questionId, bState]) => {
+    const aState = a?.[questionId];
+    return Boolean(
+      aState &&
+      aState.revealed === bState.revealed &&
+      aState.isCorrect === bState.isCorrect &&
+      sameQuestionIds(aState.selectedAnswers, bState.selectedAnswers),
+    );
+  });
+}
+
 function getSavedCurrentIndex(
   savedQuiz: QuizRouteState['quiz'],
   quizKey: string,
@@ -84,6 +110,24 @@ function getSavedCurrentIndex(
   }
 
   return 0;
+}
+
+function getSavedAnswerStates(
+  savedQuiz: QuizRouteState['quiz'],
+  quizKey: string,
+  mode: string,
+  chapter: number,
+) {
+  if (savedQuiz?.key === quizKey) {
+    return savedQuiz.answerStates ?? {};
+  }
+
+  const savedChapterProgress = mode === 'chapter' ? getChapterQuizProgress(chapter) : undefined;
+  if (savedChapterProgress?.chapter === chapter) {
+    return savedChapterProgress.answerStates ?? {};
+  }
+
+  return {};
 }
 
 export default function QuizPage() {
@@ -136,9 +180,16 @@ export default function QuizPage() {
     );
     return { key: quizKey, currentIndex };
   });
+  const [quizAnswerStates, setQuizAnswerStates] = useState<QuizAnswerStates>(() => ({
+    key: quizKey,
+    values: getSavedAnswerStates(routeState?.quiz, quizKey, mode, chapter),
+  }));
   const currentIndex = quizPosition.key === quizKey
     ? clampIndex(quizPosition.currentIndex, quizQuestions.length)
     : getSavedCurrentIndex(routeState?.quiz, quizKey, mode, chapter, quizQuestions.length);
+  const answerStates = quizAnswerStates.key === quizKey
+    ? quizAnswerStates.values
+    : getSavedAnswerStates(routeState?.quiz, quizKey, mode, chapter);
 
   useEffect(() => {
     if (quizQuestions.length === 0) return;
@@ -150,7 +201,8 @@ export default function QuizPage() {
     if (
       savedQuiz?.key === quizKey &&
       savedQuiz.currentIndex === savedIndex &&
-      sameQuestionIds(savedQuiz.questionIds, questionIds)
+      sameQuestionIds(savedQuiz.questionIds, questionIds) &&
+      sameAnswerStates(savedQuiz.answerStates, answerStates)
     ) {
       return;
     }
@@ -161,6 +213,7 @@ export default function QuizPage() {
         key: quizKey,
         questionIds,
         currentIndex: savedIndex,
+        answerStates,
       },
     };
 
@@ -168,7 +221,16 @@ export default function QuizPage() {
       { pathname: location.pathname, search: location.search },
       { replace: true, state: nextState },
     );
-  }, [currentIndex, location.pathname, location.search, navigate, quizKey, quizQuestions, routeState]);
+  }, [
+    answerStates,
+    currentIndex,
+    location.pathname,
+    location.search,
+    navigate,
+    quizKey,
+    quizQuestions,
+    routeState,
+  ]);
 
   useEffect(() => {
     if (mode !== 'chapter' || quizQuestions.length === 0) return;
@@ -177,8 +239,9 @@ export default function QuizPage() {
       chapter,
       questionIds: quizQuestions.map((q) => q.id),
       currentIndex: clampIndex(currentIndex, quizQuestions.length),
+      answerStates,
     });
-  }, [chapter, currentIndex, mode, quizQuestions]);
+  }, [answerStates, chapter, currentIndex, mode, quizQuestions]);
 
   const handleNext = () => {
     if (currentIndex < quizQuestions.length - 1) {
@@ -201,6 +264,15 @@ export default function QuizPage() {
   }
 
   const question = quizQuestions[currentIndex];
+  const handleAnswerStateChange = (state: QuestionAnswerState) => {
+    setQuizAnswerStates((current) => ({
+      key: quizKey,
+      values: {
+        ...(current.key === quizKey ? current.values : answerStates),
+        [question.id]: state,
+      },
+    }));
+  };
 
   return (
     <div className="page quiz-page">
@@ -211,6 +283,8 @@ export default function QuizPage() {
         total={quizQuestions.length}
         onNext={handleNext}
         isLast={currentIndex >= quizQuestions.length - 1}
+        answerState={answerStates[question.id]}
+        onAnswerStateChange={handleAnswerStateChange}
       />
     </div>
   );

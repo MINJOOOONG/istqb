@@ -176,6 +176,11 @@ export interface ChapterQuizProgress {
   chapter: number;
   questionIds: string[];
   currentIndex: number;
+  answerStates?: Record<string, {
+    selectedAnswers: string[];
+    revealed: boolean;
+    isCorrect: boolean;
+  }>;
 }
 
 export function getAnswered(): AnswerRecord[] {
