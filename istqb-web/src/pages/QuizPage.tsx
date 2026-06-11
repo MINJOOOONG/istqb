@@ -4,13 +4,18 @@ import questions from '../data/questions.json';
 import type { Question } from '../types/question';
 import QuestionCard from '../components/QuestionCard';
 import type { QuestionAnswerState } from '../components/QuestionCard';
-import { filterByChapter, pickRandom, shuffleArray } from '../utils/quiz';
+import ExamQuestionCard from '../components/ExamQuestionCard';
+import ExamResultPage from '../components/ExamResultPage';
+import { filterByChapter, pickRandom, shuffleArray, calculateExamResult } from '../utils/quiz';
+import type { ExamResult } from '../utils/quiz';
 import {
   clearChapterQuizProgress,
   getChapterQuizProgress,
   getWrongIds,
+  recordAnswer,
   saveChapterQuizProgress,
 } from '../utils/storage';
+import { checkAnswer } from '../utils/quiz';
 
 const allQuestions = questions as Question[];
 const questionById = new Map(allQuestions.map((question) => [question.id, question]));
@@ -138,6 +143,7 @@ export default function QuizPage() {
   const chapter = Number(searchParams.get('chapter') || 0);
   const set = searchParams.get('set') || '';
   const questionId = searchParams.get('questionId') || '';
+  const isExamMode = mode === 'exam';
   const quizKey = useMemo(
     () => getQuizKey(mode, chapter, set, questionId),
     [mode, chapter, set, questionId],
@@ -184,6 +190,11 @@ export default function QuizPage() {
     key: quizKey,
     values: getSavedAnswerStates(routeState?.quiz, quizKey, mode, chapter),
   }));
+
+  // Exam mode: track selected answers (not revealed) and submission state
+  const [examAnswers, setExamAnswers] = useState<Record<string, string[]>>({});
+  const [examResult, setExamResult] = useState<ExamResult | null>(null);
+
   const currentIndex = quizPosition.key === quizKey
     ? clampIndex(quizPosition.currentIndex, quizQuestions.length)
     : getSavedCurrentIndex(routeState?.quiz, quizKey, mode, chapter, quizQuestions.length);
@@ -254,6 +265,102 @@ export default function QuizPage() {
     }
   };
 
+  // --- Exam mode handlers ---
+  const handleExamSelect = (qId: string, optionId: string) => {
+    setExamAnswers((prev) => {
+      const question = questionById.get(qId);
+      if (!question) return prev;
+
+      const current = prev[qId] ?? [];
+      let next: string[];
+
+      if (question.isMultipleAnswer) {
+        if (current.includes(optionId)) {
+          next = current.filter((id) => id !== optionId);
+        } else {
+          next = [...current, optionId];
+        }
+      } else {
+        next = [optionId];
+      }
+
+      return { ...prev, [qId]: next };
+    });
+  };
+
+  const handleExamNext = () => {
+    if (currentIndex < quizQuestions.length - 1) {
+      setQuizPosition({ key: quizKey, currentIndex: currentIndex + 1 });
+    }
+  };
+
+  const handleExamPrev = () => {
+    if (currentIndex > 0) {
+      setQuizPosition({ key: quizKey, currentIndex: currentIndex - 1 });
+    }
+  };
+
+  const handleExamGoTo = (index: number) => {
+    setQuizPosition({ key: quizKey, currentIndex: clampIndex(index, quizQuestions.length) });
+  };
+
+  const examAnsweredCount = quizQuestions.filter(
+    (q) => (examAnswers[q.id]?.length ?? 0) > 0,
+  ).length;
+  const canSubmitExam = examAnsweredCount === quizQuestions.length;
+
+  const handleExamSubmit = () => {
+    if (!canSubmitExam) return;
+
+    const result = calculateExamResult(set, quizQuestions, examAnswers);
+
+    // Record each answer to storage for stats tracking
+    quizQuestions.forEach((q) => {
+      const selected = new Set(examAnswers[q.id] ?? []);
+      const correct = checkAnswer(q, selected);
+      recordAnswer(q.id, correct, {
+        selectedAnswers: examAnswers[q.id] ?? [],
+        correctAnswers: q.correctAnswers,
+        chapter: q.chapter,
+        section: q.section,
+      });
+    });
+    window.dispatchEvent(new Event('wrongUpdated'));
+
+    setExamResult(result);
+  };
+
+  const handleRetryWrong = () => {
+    if (!examResult) return;
+    const wrongIds = examResult.wrongQuestions.map((w) => w.question.id);
+    const wrongQuestions = quizQuestions.filter((q) => wrongIds.includes(q.id));
+
+    setExamResult(null);
+    setExamAnswers({});
+    setQuizPosition({ key: quizKey, currentIndex: 0 });
+
+    // Navigate to a special exam-wrong review using location state
+    navigate(`/quiz?mode=exam&set=${set}`, {
+      replace: true,
+      state: {
+        quiz: {
+          key: quizKey + '-wrong-retry',
+          questionIds: wrongQuestions.map((q) => q.id),
+          currentIndex: 0,
+          answerStates: {},
+        },
+      },
+    });
+    // Force reload the page to pick up the new question set
+    window.location.reload();
+  };
+
+  const handleRetryAll = () => {
+    setExamResult(null);
+    setExamAnswers({});
+    setQuizPosition({ key: quizKey, currentIndex: 0 });
+  };
+
   if (quizQuestions.length === 0) {
     return (
       <div className="page empty-page">
@@ -263,6 +370,45 @@ export default function QuizPage() {
     );
   }
 
+  // Exam mode: show result page after submission
+  if (isExamMode && examResult) {
+    return (
+      <div className="page quiz-page">
+        <ExamResultPage
+          result={examResult}
+          onRetryWrong={handleRetryWrong}
+          onRetryAll={handleRetryAll}
+        />
+      </div>
+    );
+  }
+
+  // Exam mode: show exam question card (no answer reveal)
+  if (isExamMode) {
+    const question = quizQuestions[currentIndex];
+    return (
+      <div className="page quiz-page">
+        <ExamQuestionCard
+          key={question.id + '-' + currentIndex}
+          question={question}
+          index={currentIndex}
+          total={quizQuestions.length}
+          answeredCount={examAnsweredCount}
+          selectedAnswers={examAnswers[question.id] ?? []}
+          onSelect={handleExamSelect}
+          onNext={handleExamNext}
+          onPrev={handleExamPrev}
+          onGoTo={handleExamGoTo}
+          onSubmit={handleExamSubmit}
+          allAnswers={examAnswers}
+          questions={quizQuestions}
+          canSubmit={canSubmitExam}
+        />
+      </div>
+    );
+  }
+
+  // Non-exam modes: existing behavior
   const question = quizQuestions[currentIndex];
   const handleAnswerStateChange = (state: QuestionAnswerState) => {
     setQuizAnswerStates((current) => ({
