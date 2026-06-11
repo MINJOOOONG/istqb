@@ -2,23 +2,9 @@ import { Link } from 'react-router-dom';
 import summaries from '../data/summaries.json';
 import type { Question } from '../types/question';
 import type { Summary } from '../types/summary';
+import { getConciseExplanationLines } from '../utils/explanations';
 
 const allSummaries = summaries as Summary[];
-
-function getExplanationLines(explanation: string) {
-  return explanation
-    .replace(/\s+즉,/g, '\n즉,')
-    .replace(/\s+여기서는/g, '\n여기서는')
-    .replace(/\s+따라서,/g, '\n따라서,')
-    .split('\n')
-    .map((line) =>
-      line
-        .trim()
-        .replace(/^정답입니다[.。]?\s*/, '')
-        .replace(/^정답이 아닙니다[.。]?\s*/, ''),
-    )
-    .filter((line) => line.length > 0 && !/^정답입니다[.。]?$/.test(line));
-}
 
 interface Props {
   question: Question;
@@ -62,37 +48,16 @@ export default function QuestionResult({
     question.syllabusReference.learningObjective ??
     question.learningObjective;
   const summaryTarget = relatedSummary ? `/summary/${relatedSummary.id}` : '/summary';
-  const explanationLines = getExplanationLines(question.explanation);
+  const explanationLines = getConciseExplanationLines(question.explanation);
 
   return (
     <div className="question-result">
       <div className="result-section-card solution-process">
         <h4 className="result-section-title">풀이 과정</h4>
 
-        <div className="solution-step">
-          <span className="solution-step-number">1</span>
-          <div className="solution-step-body">
-            <strong>문제에서 묻는 기준</strong>
-            <p>
-              {summarySectionNumber} {summaryTitle} ({summaryLearningObjective}) 기준으로
-              선택지를 판단합니다.
-            </p>
-          </div>
-        </div>
-
-        {relatedSummary?.examPoint && (
-          <div className="solution-step">
-            <span className="solution-step-number">2</span>
-            <div className="solution-step-body">
-              <strong>핵심 판단 기준</strong>
-              <p>{relatedSummary.examPoint}</p>
-            </div>
-          </div>
-        )}
-
         {explanationLines.length > 0 && (
           <div className="solution-step">
-            <span className="solution-step-number">{relatedSummary?.examPoint ? '3' : '2'}</span>
+            <span className="solution-step-number">1</span>
             <div className="solution-step-body">
               <strong>풀이</strong>
               {explanationLines.map((line, index) => (

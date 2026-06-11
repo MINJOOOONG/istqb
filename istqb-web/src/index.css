@@ -73,6 +73,78 @@ body {
   margin-bottom: 16px;
 }
 
+/* Entry */
+.entry-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: 28px 20px;
+  background: #F7F7F7;
+}
+
+.entry-hero {
+  width: 100%;
+  padding: 34px 24px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #FFFFFF;
+}
+
+.entry-kicker {
+  margin-bottom: 10px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.entry-hero h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  line-height: 1.12;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.entry-copy {
+  margin: 14px 0 26px;
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.entry-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.entry-primary-link,
+.entry-secondary-link {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.entry-primary-link {
+  background: #111827;
+  color: #fff;
+}
+
+.entry-secondary-link {
+  border: 1px solid #D1D5DB;
+  background: #F9FAFB;
+  color: #111827;
+}
+
 /* Bottom Nav */
 .bottom-nav {
   position: fixed;
@@ -155,7 +227,7 @@ body {
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 0.9fr 1.35fr;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
   gap: 6px;
   padding: 8px 0;
   background: rgba(255, 255, 255, 0.96);
@@ -444,7 +516,6 @@ body {
 }
 
 .question-source-badge {
-  margin-left: auto;
   padding: 3px 7px;
   border: 1px solid #D4D4D4;
   background: #FFFFFF;
@@ -453,6 +524,46 @@ body {
   font-weight: 700;
   line-height: 1.2;
   white-space: nowrap;
+}
+
+.source-link-btn {
+  margin-left: auto;
+  padding: 5px 9px;
+  border: 1px solid #111;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.source-page {
+  padding: 14px 10px calc(var(--nav-height) + 92px);
+}
+
+.source-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.source-header h1 {
+  margin: 0 0 4px;
+}
+
+.source-back-link {
+  flex-shrink: 0;
+  padding: 8px 0;
+  border: none;
+  background: none;
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 /* Question Card */
@@ -783,7 +894,7 @@ body {
 
 .summary-card {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   width: 100%;
   padding: 11px 0;
@@ -793,6 +904,14 @@ body {
   border-radius: 0;
   background: transparent;
   cursor: pointer;
+}
+
+.summary-card-main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
 }
 
 .summary-card:last-child {
@@ -821,11 +940,23 @@ body {
 }
 
 .summary-card-title {
+  flex: 1;
+  min-width: 0;
   font-size: 15px;
   font-weight: 600;
   line-height: 1.42;
   color: #111;
   word-break: keep-all;
+}
+
+.importance-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #178DB8;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .summary-card-meta {
@@ -852,6 +983,7 @@ body {
 /* Summary detail */
 .detail-page {
   padding: 16px 14px calc(var(--nav-height) + 28px);
+  color: #1f2937;
 }
 
 .detail-page .btn-back {
@@ -879,16 +1011,56 @@ body {
 }
 
 .detail-page h1 {
-  font-size: 21px;
-  line-height: 1.35;
-  margin-bottom: 8px;
+  font-size: 24px;
+  line-height: 1.28;
+  margin: 4px 0 10px;
+  color: #111827;
+  letter-spacing: 0;
   word-break: keep-all;
 }
 
 .detail-lo {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.detail-header {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.detail-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+
+.keyword-tag {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #F3F4F6;
+  color: #4b5563;
   font-size: 12px;
-  color: var(--gray);
-  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.syllabus-jump-btn {
+  width: 100%;
+  min-height: 42px;
+  margin: 0 0 12px;
+  padding: 0 14px;
+  border: 1px solid #111827;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .detail-reference-row {
@@ -922,29 +1094,28 @@ body {
 }
 
 .detail-section {
-  padding: 16px;
+  padding: 18px 16px;
   margin-bottom: 14px;
-  border: 1px solid #D7D7D7;
-  border-radius: 0;
-  background:
-    linear-gradient(to bottom, transparent 31px, rgba(17, 17, 17, 0.04) 32px),
-    #FFFFFF;
-  background-size: 100% 32px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: #FFFFFF;
 }
 
 .detail-section h2 {
   display: inline-block;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #888;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 0 11px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #111827;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 14px;
 }
 
 .detail-body p {
-  font-size: 15px;
-  line-height: 1.75;
-  margin-bottom: 7px;
+  font-size: 16px;
+  line-height: 1.86;
+  margin-bottom: 10px;
+  color: #263241;
   word-break: keep-all;
 }
 
@@ -954,31 +1125,43 @@ body {
 }
 
 .summary-note-line.is-heading {
-  margin-top: 2px;
-  font-weight: 700;
+  margin: 2px 0 8px;
+  color: #111827;
+  font-weight: 800;
 }
 
 .summary-note-line.is-bullet {
   position: relative;
-  padding-left: 15px;
+  padding-left: 18px;
+  color: #374151;
 }
 
 .summary-note-line.is-bullet::before {
   content: "";
   position: absolute;
-  left: 2px;
-  top: 0.85em;
-  width: 4px;
-  height: 4px;
-  background: #111;
+  left: 3px;
+  top: 0.78em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #4b5563;
+}
+
+.summary-note-line.is-empty {
+  height: 8px;
+  margin: 0;
 }
 
 .exam-point {
-  box-shadow: inset 4px 0 0 #D9D9D9;
+  border-color: #D1D5DB;
+  background: #F9FAFB;
 }
 
 .exam-point p {
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.78;
+  color: #374151;
+  word-break: keep-all;
   line-height: 1.7;
 }
 

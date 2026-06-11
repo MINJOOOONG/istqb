@@ -25,14 +25,24 @@ type PendingSelection = {
 
 type ReactTouchList = TouchEvent<HTMLDivElement>['touches'];
 
-export default function PdfViewer() {
+interface Props {
+  pdfPath?: string;
+  initialPage?: number;
+  enableAnnotations?: boolean;
+}
+
+export default function PdfViewer({
+  pdfPath = PDF_PATH,
+  initialPage = 1,
+  enableAnnotations = true,
+}: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const pinchStartDistanceRef = useRef(0);
   const pinchStartZoomRef = useRef(1);
   const isPinchingRef = useRef(false);
   const [numPages, setNumPages] = useState(0);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(initialPage);
   const [containerWidth, setContainerWidth] = useState(360);
   const [zoom, setZoom] = useState(1);
   const [annotations, setAnnotations] = useState<PdfAnnotation[]>(() => getPdfAnnotations());
@@ -51,13 +61,13 @@ export default function PdfViewer() {
   }, []);
 
   useEffect(() => {
-    savePdfAnnotations(annotations);
-  }, [annotations]);
+    if (enableAnnotations) savePdfAnnotations(annotations);
+  }, [annotations, enableAnnotations]);
 
   const pageWidth = Math.max(280, Math.floor(containerWidth * zoom));
   const pageAnnotations = useMemo(
-    () => annotations.filter((annotation) => annotation.pageNumber === pageNumber),
-    [annotations, pageNumber]
+    () => enableAnnotations ? annotations.filter((annotation) => annotation.pageNumber === pageNumber) : [],
+    [annotations, enableAnnotations, pageNumber]
   );
 
   const clearSelection = useCallback(() => {
@@ -66,6 +76,8 @@ export default function PdfViewer() {
   }, []);
 
   const captureSelection = useCallback(() => {
+    if (!enableAnnotations) return;
+
     const selection = window.getSelection();
     const pageElement = pageRef.current;
     if (!selection || selection.rangeCount === 0 || selection.isCollapsed || !pageElement) {
@@ -112,11 +124,11 @@ export default function PdfViewer() {
       toolbarTop: Math.max(72, firstRect.top - 52),
       toolbarLeft: Math.min(window.innerWidth - 156, Math.max(12, firstRect.left)),
     });
-  }, [pageNumber]);
+  }, [enableAnnotations, pageNumber]);
 
   const createAnnotation = useCallback(
     (type: PdfAnnotationType) => {
-      if (!pendingSelection) return;
+      if (!pendingSelection || !enableAnnotations) return;
 
       const rects =
         type === 'underline'
@@ -139,22 +151,24 @@ export default function PdfViewer() {
       setAnnotations((current) => [...current, nextAnnotation]);
       clearSelection();
     },
-    [clearSelection, pendingSelection]
+    [clearSelection, enableAnnotations, pendingSelection]
   );
 
   const removeAnnotation = useCallback((id: string) => {
+    if (!enableAnnotations) return;
+
     const target = annotations.find((annotation) => annotation.id === id);
     const label = target?.type === 'highlight' ? '형광펜' : '밑줄';
     if (!window.confirm(`${label} 표시를 삭제할까요?`)) return;
     setAnnotations((current) => current.filter((annotation) => annotation.id !== id));
-  }, [annotations]);
+  }, [annotations, enableAnnotations]);
 
   const clearAll = useCallback(() => {
-    if (annotations.length === 0) return;
+    if (!enableAnnotations || annotations.length === 0) return;
     if (!window.confirm('저장된 모든 밑줄과 형광펜 표시를 삭제할까요?')) return;
     setAnnotations([]);
     clearSelection();
-  }, [annotations.length, clearSelection]);
+  }, [annotations.length, clearSelection, enableAnnotations]);
 
   const getTouchDistance = (touches: ReactTouchList) => {
     const [first, second] = [touches[0], touches[1]];
@@ -216,14 +230,16 @@ export default function PdfViewer() {
         <button type="button" onClick={() => setZoom(1)} disabled={zoom === 1}>
           기준
         </button>
-        <button type="button" className="danger" onClick={clearAll} disabled={annotations.length === 0}>
-          전체 삭제
-        </button>
+        {enableAnnotations && (
+          <button type="button" className="danger" onClick={clearAll} disabled={annotations.length === 0}>
+            전체 삭제
+          </button>
+        )}
       </div>
 
       {loadError ? (
         <div className="pdf-empty">
-          PDF 파일을 public/files/ctfl-syllabus-ko.pdf 위치에 추가해주세요.
+          PDF 파일을 불러올 수 없습니다.
         </div>
       ) : (
         <div
@@ -234,9 +250,9 @@ export default function PdfViewer() {
           onTouchEnd={handleTouchEnd}
         >
           <Document
-            file={PDF_PATH}
+            file={pdfPath}
             loading={<div className="pdf-empty">PDF를 불러오는 중...</div>}
-            error={<div className="pdf-empty">PDF 파일을 public/files/ctfl-syllabus-ko.pdf 위치에 추가해주세요.</div>}
+            error={<div className="pdf-empty">PDF 파일을 불러올 수 없습니다.</div>}
             onLoadSuccess={({ numPages: nextNumPages }) => {
               setNumPages(nextNumPages);
               setLoadError(false);
@@ -258,7 +274,7 @@ export default function PdfViewer() {
       )}
 
       <SelectionToolbar
-        visible={pendingSelection !== null}
+        visible={enableAnnotations && pendingSelection !== null}
         top={pendingSelection?.toolbarTop ?? 0}
         left={pendingSelection?.toolbarLeft ?? 0}
         onCreate={createAnnotation}

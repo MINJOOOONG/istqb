@@ -4,6 +4,14 @@ import type { Summary } from '../types/summary';
 
 const allSummaries = summaries as Summary[];
 
+function getSummaryLineClass(line: string) {
+  const trimmed = line.trim();
+  if (!trimmed) return 'summary-note-line is-empty';
+  if (trimmed.endsWith(':')) return 'summary-note-line is-heading';
+  if (trimmed.startsWith('-')) return 'summary-note-line is-bullet';
+  return 'summary-note-line';
+}
+
 export default function SummaryDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -33,6 +41,13 @@ export default function SummaryDetailPage() {
 
       <p className="detail-lo">LO: {summary.learningObjective}</p>
 
+      <button
+        className="syllabus-jump-btn"
+        onClick={() => navigate(`/syllabus?lo=${summary.learningObjective}`)}
+      >
+        관련 실러버스 바로가기
+      </button>
+
       <div className="detail-keywords">
         {summary.keywords.map((kw) => (
           <span key={kw} className="keyword-tag">{kw}</span>
@@ -43,7 +58,9 @@ export default function SummaryDetailPage() {
         <h2>요약</h2>
         <div className="detail-body">
           {summary.summary.split('\n').map((line, i) => (
-            <p key={i}>{line}</p>
+            <p key={i} className={getSummaryLineClass(line)}>
+              {line.replace(/^-+\s*/, '')}
+            </p>
           ))}
         </div>
       </div>

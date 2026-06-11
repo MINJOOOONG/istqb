@@ -126,3 +126,25 @@ export function findSyllabusSection(learningObjective: string): SyllabusSection 
   if (!chapter) return undefined;
   return chapter.sections.find((s) => s.learningObjective === learningObjective);
 }
+
+const syllabusPageByLearningObjective: Record<string, number> = {
+  'FL-1.1.1': 15, 'FL-1.1.2': 16, 'FL-1.2.1': 16, 'FL-1.2.2': 17, 'FL-1.2.3': 17,
+  'FL-1.3.1': 18, 'FL-1.4.1': 19, 'FL-1.4.2': 20, 'FL-1.4.3': 20, 'FL-1.4.4': 21,
+  'FL-1.4.5': 22, 'FL-1.5.1': 22, 'FL-1.5.2': 23, 'FL-1.5.3': 23,
+  'FL-2.1.1': 26, 'FL-2.1.2': 27, 'FL-2.1.3': 27, 'FL-2.1.4': 28, 'FL-2.1.5': 28,
+  'FL-2.1.6': 29, 'FL-2.2.1': 30, 'FL-2.2.2': 31, 'FL-2.2.3': 32, 'FL-2.3.1': 33,
+  'FL-3.1.1': 35, 'FL-3.1.2': 35, 'FL-3.1.3': 36, 'FL-3.2.1': 37, 'FL-3.2.2': 37,
+  'FL-3.2.3': 38, 'FL-3.2.4': 38, 'FL-3.2.5': 39,
+  'FL-4.1.1': 42, 'FL-4.2.1': 42, 'FL-4.2.2': 43, 'FL-4.2.3': 44, 'FL-4.2.4': 45,
+  'FL-4.3.1': 46, 'FL-4.3.2': 46, 'FL-4.3.3': 47, 'FL-4.4.1': 48, 'FL-4.4.2': 48,
+  'FL-4.4.3': 49, 'FL-4.5.1': 49, 'FL-4.5.2': 50, 'FL-4.5.3': 50,
+  'FL-5.1.1': 54, 'FL-5.1.2': 54, 'FL-5.1.3': 55, 'FL-5.1.4': 56, 'FL-5.1.5': 56,
+  'FL-5.1.6': 57, 'FL-5.1.7': 57, 'FL-5.2.1': 58, 'FL-5.2.2': 59, 'FL-5.2.3': 59,
+  'FL-5.2.4': 60, 'FL-5.3.1': 61, 'FL-5.3.2': 61, 'FL-5.3.3': 62, 'FL-5.4.1': 63,
+  'FL-5.5.1': 63,
+  'FL-6.1.1': 66, 'FL-6.2.1': 66,
+};
+
+export function getSyllabusPageForLearningObjective(learningObjective: string) {
+  return syllabusPageByLearningObjective[learningObjective] ?? 1;
+}

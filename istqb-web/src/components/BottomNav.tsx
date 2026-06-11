@@ -19,7 +19,7 @@ export default function BottomNav() {
 
   return (
     <nav className="bottom-nav">
-      <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+      <NavLink to="/practice" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
         <span className="nav-icon">📝</span>
         <span>문제</span>
       </NavLink>
