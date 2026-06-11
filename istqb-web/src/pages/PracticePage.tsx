@@ -1,15 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import questions from '../data/questions.json';
 import type { Question } from '../types/question';
 import ChapterSelector from '../components/ChapterSelector';
 import ChapterStatsComponent from '../components/ChapterStats';
-import { getChapterStatsWithQuestions } from '../utils/storage';
+import { clearAnswerStats, getChapterStatsWithQuestions } from '../utils/storage';
 
 const allQuestions = questions as Question[];
 
 export default function PracticePage() {
   const navigate = useNavigate();
+  const [, setStatsVersion] = useState(0);
   const examSets = useMemo(() => {
     return Array.from(
       allQuestions.reduce((map, question) => {
@@ -19,6 +20,11 @@ export default function PracticePage() {
       }, new Map<string, number>())
     ).sort(([a], [b]) => a.localeCompare(b));
   }, []);
+
+  const handleResetChapterStats = () => {
+    clearAnswerStats();
+    setStatsVersion((version) => version + 1);
+  };
 
   const chapters = useMemo(() => {
     const map = new Map<number, { titleEn: string; titleKo: string; count: number }>();
@@ -66,7 +72,10 @@ export default function PracticePage() {
         onSelect={(ch) => navigate(`/quiz?mode=chapter&chapter=${ch}`)}
       />
 
-      <ChapterStatsComponent stats={getChapterStatsWithQuestions(allQuestions)} />
+      <ChapterStatsComponent
+        stats={getChapterStatsWithQuestions(allQuestions)}
+        onReset={handleResetChapterStats}
+      />
     </div>
   );
 }

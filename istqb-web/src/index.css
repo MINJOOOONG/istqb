@@ -1473,6 +1473,29 @@ body {
   margin-bottom: 16px;
 }
 
+.chapter-stats-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chapter-stats-reset-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.chapter-stats-reset-btn:active {
+  background: var(--light-gray);
+}
+
 .stats-list {
   display: flex;
   flex-direction: column;

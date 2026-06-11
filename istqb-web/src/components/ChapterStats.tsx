@@ -2,6 +2,7 @@ import type { ChapterStat } from '../utils/storage';
 
 interface Props {
   stats: ChapterStat[];
+  onReset: () => void;
 }
 
 const chapterNames: Record<number, string> = {
@@ -13,14 +14,25 @@ const chapterNames: Record<number, string> = {
   6: '테스트 도구',
 };
 
-export default function ChapterStats({ stats }: Props) {
+export default function ChapterStats({ stats, onReset }: Props) {
   if (stats.length === 0) {
     return null;
   }
 
   return (
     <div className="chapter-stats">
-      <h2>챕터별 정답률</h2>
+      <div className="chapter-stats-title-row">
+        <h2>챕터별 정답률</h2>
+        <button
+          type="button"
+          className="chapter-stats-reset-btn"
+          aria-label="챕터별 정답률 초기화"
+          title="챕터별 정답률 초기화"
+          onClick={onReset}
+        >
+          ↻
+        </button>
+      </div>
       <div className="stats-list">
         {stats.map((stat) => (
           <div key={stat.chapter} className="stat-item">
