@@ -23,14 +23,28 @@ const REASON_PATTERNS = [
   /때문/,
 ];
 
+const PDF_SPLIT_WORDS: Array<[RegExp, string]> = [
+  [/결\s+함/g, '결함'],
+  [/테\s+스트/g, '테스트'],
+  [/테\s+스팅/g, '테스팅'],
+  [/요구\s+사항/g, '요구사항'],
+  [/형\s+상/g, '형상'],
+  [/관\s+리/g, '관리'],
+];
+
 function normalizeExplanation(explanation: string) {
-  return explanation
+  const normalized = explanation
     .replace(/\r/g, '\n')
     .replace(/\s+([.,:;!?。])/g, '$1')
     .replace(/([({[])\s+/g, '$1')
     .replace(/\s+([)\]}])/g, '$1')
     .replace(/[ \t]+/g, ' ')
     .trim();
+
+  return PDF_SPLIT_WORDS.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    normalized,
+  );
 }
 
 function stripResultPrefix(sentence: string) {
@@ -57,8 +71,6 @@ function trimLongSentence(sentence: string, maxChars: number) {
     return trimLongSentence(contrastTail[1].trim(), maxChars);
   }
 
-  if (sentence.length <= maxChars) return sentence;
-
   const clauses = sentence.split(/(?<=다),\s+|(?<=며),\s+|(?<=고),\s+|(?<=지만),\s+|예를 들어/);
   const usefulClause = clauses
     .map((clause) => clause.trim())
@@ -66,7 +78,7 @@ function trimLongSentence(sentence: string, maxChars: number) {
 
   if (usefulClause) return usefulClause;
 
-  return `${sentence.slice(0, maxChars - 1).trim()}…`;
+  return sentence;
 }
 
 function pickBestSentence(sentences: string[]) {
