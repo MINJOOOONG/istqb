@@ -131,55 +131,60 @@ ISTQB 공식 샘플 시험 A/B/C/D 세트의 문제를 기반으로, 문제 풀�
 ## 프로젝트 구조
 
 ```
-istqb-web/
-├── public/
-│   ├── manifest.json            # PWA 설정
-│   ├── icon-192.png / 512.png   # 앱 아이콘
-│   └── files/                   # PDF 파일들
-├── scripts/
-│   └── extractSampleExams.mjs   # 샘플 시험 PDF → JSON 변환 스크립트
-├── src/
-│   ├── App.tsx                  # 라우트 정의
-│   ├── main.tsx                 # 엔트리 포인트
-│   ├── index.css                # 전역 스타일
-│   ├── pages/
-│   │   ├── EntryPage.tsx        # 랜딩 페이지
-│   │   ├── PracticePage.tsx     # 문제 풀기 허브
-│   │   ├── QuizPage.tsx         # 퀴즈 진행 (일반/시험 모드)
-│   │   ├── WrongNotePage.tsx    # 오답 노트
-│   │   ├── SummaryPage.tsx      # 학습 요약 목록
-│   │   ├── SummaryDetailPage.tsx# 요약 상세
-│   │   ├── SyllabusPage.tsx     # 실라버스 PDF 뷰어
-│   │   └── QuestionSourcePage.tsx # 문제 출처 PDF 뷰어
-│   ├── components/
-│   │   ├── QuestionCard.tsx     # 일반 모드 문제 카드
-│   │   ├── ExamQuestionCard.tsx # 시험 모드 문제 카드
-│   │   ├── ExamResultPage.tsx   # 모의고사 결과 (합격/불합격)
-│   │   ├── QuestionResult.tsx   # 문제 결과 표시
-│   │   ├── BottomNav.tsx        # 하단 네비게이션 바
-│   │   ├── ChapterSelector.tsx  # 챕터 선택 UI
-│   │   ├── ChapterStats.tsx     # 챕터별 통계
-│   │   ├── PdfViewer.tsx        # PDF 뷰어
-│   │   └── AnnotationLayer.tsx  # PDF 주석 레이어
-│   ├── data/
-│   │   ├── questions.json       # 전체 문제 데이터
-│   │   ├── summaries.json       # 학습 요약 데이터
-│   │   └── syllabusMap.ts       # 실라버스 구조 매핑
-│   ├── types/
-│   │   ├── question.ts          # Question 타입 정의
-│   │   ├── summary.ts           # Summary 타입 정의
-│   │   └── annotation.ts        # PDF 주석 타입
-│   └── utils/
-│       ├── quiz.ts              # 퀴즈 로직 (셔플, 필터, 채점)
-│       ├── storage.ts           # LocalStorage CRUD, 마이그레이션
-│       ├── explanations.ts      # 해설 텍스트 포맷팅
-│       ├── sourcePdfs.ts        # PDF 출처 매핑
-│       ├── text.ts              # 텍스트 유틸리티
-│       └── pdfAnnotations.ts    # PDF 주석 유틸리티
-├── vercel.json                  # Vercel 배포 설정
-├── vite.config.ts               # Vite 빌드 설정
-├── tsconfig.json                # TypeScript 설정
-└── package.json                 # 의존성 및 스크립트
+istqb/
+├── istqb-web/                     # 웹 앱 (React + Vite)
+│   ├── public/
+│   │   ├── manifest.json          # PWA 설정
+│   │   ├── icon-192.png / 512.png # 앱 아이콘
+│   │   └── files/                 # PDF 파일들
+│   ├── scripts/
+│   │   └── extractSampleExams.mjs # 샘플 시험 PDF → JSON 변환 스크립트
+│   ├── src/
+│   │   ├── App.tsx                # 라우트 정의
+│   │   ├── main.tsx               # 엔트리 포인트
+│   │   ├── index.css              # 전역 스타일
+│   │   ├── pages/
+│   │   │   ├── EntryPage.tsx      # 랜딩 페이지
+│   │   │   ├── PracticePage.tsx   # 문제 풀기 허브
+│   │   │   ├── QuizPage.tsx       # 퀴즈 진행 (일반/시험 모드)
+│   │   │   ├── WrongNotePage.tsx  # 오답 노트
+│   │   │   ├── SummaryPage.tsx    # 학습 요약 목록
+│   │   │   ├── SummaryDetailPage.tsx # 요약 상세
+│   │   │   ├── SyllabusPage.tsx   # 실라버스 PDF 뷰어
+│   │   │   └── QuestionSourcePage.tsx # 문제 출처 PDF 뷰어
+│   │   ├── components/
+│   │   │   ├── QuestionCard.tsx   # 일반 모드 문제 카드
+│   │   │   ├── ExamQuestionCard.tsx # 시험 모드 문제 카드
+│   │   │   ├── ExamResultPage.tsx # 모의고사 결과 (합격/불합격)
+│   │   │   ├── QuestionResult.tsx # 문제 결과 표시
+│   │   │   ├── BottomNav.tsx      # 하단 네비게이션 바
+│   │   │   ├── ChapterSelector.tsx # 챕터 선택 UI
+│   │   │   ├── ChapterStats.tsx   # 챕터별 통계
+│   │   │   ├── PdfViewer.tsx      # PDF 뷰어
+│   │   │   └── AnnotationLayer.tsx # PDF 주석 레이어
+│   │   ├── data/
+│   │   │   ├── questions.json     # 전체 문제 데이터
+│   │   │   ├── summaries.json     # 학습 요약 데이터
+│   │   │   └── syllabusMap.ts     # 실라버스 구조 매핑
+│   │   ├── types/
+│   │   │   ├── question.ts        # Question 타입 정의
+│   │   │   ├── summary.ts         # Summary 타입 정의
+│   │   │   └── annotation.ts      # PDF 주석 타입
+│   │   └── utils/
+│   │       ├── quiz.ts            # 퀴즈 로직 (셔플, 필터, 채점)
+│   │       ├── storage.ts         # LocalStorage CRUD, 마이그레이션
+│   │       ├── explanations.ts    # 해설 텍스트 포맷팅
+│   │       ├── sourcePdfs.ts      # PDF 출처 매핑
+│   │       ├── text.ts            # 텍스트 유틸리티
+│   │       └── pdfAnnotations.ts  # PDF 주석 유틸리티
+│   ├── vercel.json                # Vercel 배포 설정
+│   ├── vite.config.ts             # Vite 빌드 설정
+│   ├── tsconfig.json              # TypeScript 설정
+│   └── package.json               # 의존성 및 스크립트
+├── ISTQBCTFLStudy/                # iOS 앱 (Swift)
+├── ISTQBCTFLStudy.xcodeproj/     # Xcode 프로젝트
+├── files/                         # 원본 PDF 파일
+└── project.yml                    # 프로젝트 설정
 ```
 
 ---
@@ -187,6 +192,8 @@ istqb-web/
 ## 시작하기
 
 ```bash
+cd istqb-web
+
 # 의존성 설치
 npm install
 
