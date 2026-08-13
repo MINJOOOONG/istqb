@@ -5,6 +5,7 @@ import type { Question } from '../types/question';
 import { getWrongNotes, removeWrongNote, type WrongNoteRecord } from '../utils/storage';
 import QuestionResult from '../components/QuestionResult';
 import { getQuestionSourceInfo } from '../utils/sourcePdfs';
+import { toQuestionPreviewText } from '../utils/questionContent';
 
 const allQuestions = questions as Question[];
 const questionMap = new Map(allQuestions.map((q) => [q.id, q]));
@@ -176,7 +177,7 @@ export default function WrongNotePage() {
                 </div>
                 <button className="wrong-item-text-btn" onClick={() => handleToggleExpand(note.questionId)}>
                   <p className="wrong-item-text">
-                    Q{q.questionNumber}. {q.questionText}
+                    Q{q.questionNumber}. {toQuestionPreviewText(q.questionText)}
                   </p>
                   <span className="toggle-icon">{isExpanded ? '▲' : '▼'}</span>
                 </button>

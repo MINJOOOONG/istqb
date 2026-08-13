@@ -580,7 +580,6 @@ body {
 }
 
 .question-text {
-  white-space: pre-line;
   font-size: 15px;
   line-height: 1.62;
   font-weight: 600;
@@ -591,6 +590,107 @@ body {
   border-radius: 0;
   padding: 18px 16px;
   margin-bottom: 14px;
+}
+
+.question-paragraph {
+  white-space: pre-line;
+}
+
+.question-paragraph + .question-paragraph {
+  margin-top: 10px;
+}
+
+/* 지문 안에 들어가는 표(결정 테이블, 상태 전이 테이블 등) */
+/* 표가 화면보다 넓을 때만 좌우 끝에 그림자를 보여줘 스크롤 가능함을 알린다. */
+.question-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 12px 0;
+  border: 1px solid #C9C9C9;
+  background:
+    linear-gradient(to right, #FFFFFF 30%, rgba(255, 255, 255, 0)) left center,
+    linear-gradient(to left, #FFFFFF 30%, rgba(255, 255, 255, 0)) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0)) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0)) right center;
+  background-color: #FFFFFF;
+  background-repeat: no-repeat;
+  background-size: 28px 100%, 28px 100%, 12px 100%, 12px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.question-paragraph + .question-table-wrap {
+  margin-top: 12px;
+}
+
+.question-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #1f2937;
+}
+
+.question-table th,
+.question-table td {
+  border: 1px solid #DCDCDC;
+  padding: 7px 9px;
+  text-align: center;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.question-table thead th {
+  background: #F1F3F5;
+  font-weight: 700;
+}
+
+.question-table .question-table-section th {
+  background: #EEF0F2;
+  text-align: left;
+  font-weight: 700;
+  padding: 0;
+}
+
+.question-table .question-table-section th span {
+  display: inline-block;
+  position: sticky;
+  left: 0;
+  padding: 7px 9px;
+}
+
+/* 첫 열은 행 이름이므로 가로 스크롤 중에도 고정한다 */
+.question-table .question-table-row-head {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #F8F9FA;
+  text-align: right;
+  font-weight: 600;
+}
+
+.question-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #F1F3F5;
+}
+
+/* 실행 로그, 의사 코드처럼 원본의 정렬을 유지해야 하는 블록 */
+.question-code {
+  margin: 12px 0;
+  padding: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #F8F9FA;
+  border: 1px solid #C9C9C9;
+  font-family: 'SFMono-Regular', Menlo, Consolas, 'D2Coding', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  color: #1f2937;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .multi-hint {
