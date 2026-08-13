@@ -1,5 +1,3 @@
-import { normalizeExtractedQuestionText } from './text';
-
 // --- Question body parsing ---
 //
 // PDF에서 추출한 지문에는 결정 테이블, 상태 전이 테이블, 실행 로그처럼
@@ -60,7 +58,8 @@ function toTableBlock(lines: string[]): QuestionBlock {
 }
 
 function toTextBlock(lines: string[]): QuestionBlock | null {
-  const text = normalizeExtractedQuestionText(lines.join('\n')).trim();
+  // 지문은 원본 시험지의 줄 구성 그대로 저장돼 있으므로 손대지 않고 그대로 쓴다
+  const text = lines.map((line) => line.trimEnd()).join('\n').trim();
   return text ? { type: 'text', text } : null;
 }
 
