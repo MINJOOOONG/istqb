@@ -1,7 +1,7 @@
 import type { Question } from '../types/question';
 import OptionButton from './OptionButton';
 import { getQuestionSourceInfo } from '../utils/sourcePdfs';
-import QuestionBody from './QuestionBody';
+import QuestionStem from './QuestionStem';
 
 interface Props {
   question: Question;
@@ -86,7 +86,7 @@ export default function ExamQuestionCard({
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 
-      <QuestionBody questionText={question.questionText} />
+      <QuestionStem question={question} />
 
       {question.isMultipleAnswer && (
         <p className="multi-hint">

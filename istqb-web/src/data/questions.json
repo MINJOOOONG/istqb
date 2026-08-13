@@ -866,6 +866,11 @@
       "section": "2.2",
       "title": "확인 테스팅과 리그레션 테스팅",
       "learningObjective": "FL-2.2.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-a-14.png",
+      "width": 1408,
+      "height": 710
     }
   },
   {
@@ -1296,6 +1301,11 @@
       "section": "4.2",
       "title": "경계값 분석",
       "learningObjective": "FL-4.2.2"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-a-21.png",
+      "width": 1404,
+      "height": 1419
     }
   },
   {
@@ -1358,6 +1368,11 @@
       "section": "4.2",
       "title": "결정 테이블 테스팅",
       "learningObjective": "FL-4.2.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-a-22.png",
+      "width": 1408,
+      "height": 1376
     }
   },
   {
@@ -1421,6 +1436,11 @@
       "section": "4.2",
       "title": "상태 전이 테스팅",
       "learningObjective": "FL-4.2.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-a-23.png",
+      "width": 1328,
+      "height": 799
     }
   },
   {
@@ -2040,6 +2060,11 @@
       "section": "5.1",
       "title": "테스트 케이스 우선순위 지정",
       "learningObjective": "FL-5.1.5"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-a-33.png",
+      "width": 1397,
+      "height": 560
     }
   },
   {
@@ -3833,6 +3858,11 @@
       "section": "4.2",
       "title": "결정 테이블 테스팅",
       "learningObjective": "FL-4.2.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-b-22.png",
+      "width": 1381,
+      "height": 1313
     }
   },
   {
@@ -3896,6 +3926,11 @@
       "section": "4.2",
       "title": "상태 전이 테스팅",
       "learningObjective": "FL-4.2.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-b-23.png",
+      "width": 1404,
+      "height": 818
     }
   },
   {
@@ -4391,6 +4426,11 @@
       "section": "5.1",
       "title": "테스트 노력 추정 기법",
       "learningObjective": "FL-5.1.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-b-31.png",
+      "width": 1398,
+      "height": 566
     }
   },
   {
@@ -4453,6 +4493,11 @@
       "section": "5.1",
       "title": "테스트 케이스 우선순위 지정",
       "learningObjective": "FL-5.1.5"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-b-32.png",
+      "width": 1395,
+      "height": 1100
     }
   },
   {
@@ -4825,6 +4870,11 @@
       "section": "5.5",
       "title": "결함 관리와 결함 보고서",
       "learningObjective": "FL-5.5.1"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-b-38.png",
+      "width": 1397,
+      "height": 1011
     }
   },
   {
@@ -6250,6 +6300,11 @@
       "section": "4.2",
       "title": "경계값 분석",
       "learningObjective": "FL-4.2.2"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-21.png",
+      "width": 1398,
+      "height": 539
     }
   },
   {
@@ -6312,6 +6367,11 @@
       "section": "4.2",
       "title": "결정 테이블 테스팅",
       "learningObjective": "FL-4.2.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-22.png",
+      "width": 1409,
+      "height": 669
     }
   },
   {
@@ -6375,6 +6435,11 @@
       "section": "4.2",
       "title": "상태 전이 테스팅",
       "learningObjective": "FL-4.2.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-23.png",
+      "width": 1296,
+      "height": 835
     }
   },
   {
@@ -6436,6 +6501,11 @@
       "section": "4.3",
       "title": "분기 테스팅과 분기 커버리지",
       "learningObjective": "FL-4.3.2"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-24.png",
+      "width": 1249,
+      "height": 805
     }
   },
   {
@@ -6741,6 +6811,11 @@
       "section": "4.5",
       "title": "ATDD로 테스트 케이스 도출",
       "learningObjective": "FL-4.5.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-29.png",
+      "width": 1397,
+      "height": 757
     }
   },
   {
@@ -6866,6 +6941,11 @@
       "section": "5.1",
       "title": "테스트 노력 추정 기법",
       "learningObjective": "FL-5.1.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-31.png",
+      "width": 1399,
+      "height": 1143
     }
   },
   {
@@ -6928,6 +7008,11 @@
       "section": "5.1",
       "title": "테스트 케이스 우선순위 지정",
       "learningObjective": "FL-5.1.5"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-32.png",
+      "width": 1386,
+      "height": 981
     }
   },
   {
@@ -7299,6 +7384,11 @@
       "section": "5.5",
       "title": "결함 관리와 결함 보고서",
       "learningObjective": "FL-5.5.1"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-c-38.png",
+      "width": 1397,
+      "height": 930
     }
   },
   {
@@ -8788,6 +8878,11 @@
       "section": "4.2",
       "title": "결정 테이블 테스팅",
       "learningObjective": "FL-4.2.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-d-22.png",
+      "width": 1398,
+      "height": 897
     }
   },
   {
@@ -8851,6 +8946,11 @@
       "section": "4.2",
       "title": "상태 전이 테스팅",
       "learningObjective": "FL-4.2.4"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-d-23.png",
+      "width": 1392,
+      "height": 750
     }
   },
   {
@@ -9218,6 +9318,11 @@
       "section": "4.5",
       "title": "ATDD로 테스트 케이스 도출",
       "learningObjective": "FL-4.5.3"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-d-29.png",
+      "width": 1397,
+      "height": 823
     }
   },
   {
@@ -9409,6 +9514,11 @@
       "section": "5.1",
       "title": "테스트 케이스 우선순위 지정",
       "learningObjective": "FL-5.1.5"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-d-32.png",
+      "width": 1394,
+      "height": 769
     }
   },
   {
@@ -9787,6 +9897,11 @@
       "section": "5.5",
       "title": "결함 관리와 결함 보고서",
       "learningObjective": "FL-5.5.1"
+    },
+    "stemImage": {
+      "src": "/question-images/ctfl-d-38.png",
+      "width": 1397,
+      "height": 1154
     }
   },
   {

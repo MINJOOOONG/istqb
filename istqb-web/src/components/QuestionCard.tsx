@@ -5,7 +5,7 @@ import QuestionResult from './QuestionResult';
 import { checkAnswer } from '../utils/quiz';
 import { recordAnswer, removeWrongId, getWrongIds, saveWrongNote } from '../utils/storage';
 import { getQuestionSourceInfo } from '../utils/sourcePdfs';
-import QuestionBody from './QuestionBody';
+import QuestionStem from './QuestionStem';
 
 // --- QuestionCard component ---
 
@@ -133,7 +133,7 @@ export default function QuestionCard({
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 
-      <QuestionBody questionText={question.questionText} />
+      <QuestionStem question={question} />
 
       {question.isMultipleAnswer && (
         <p className="multi-hint">
