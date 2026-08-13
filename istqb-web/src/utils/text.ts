@@ -1,5 +1,5 @@
 const STRUCTURED_LINE_PATTERN =
-  /^(\d+\.|[A-Z]\.|[ivxlcdm]+\.\s|[•-]\s|TC\d+|AC\d+|조건|동작|번호|첫 번째|두 번째|세 번째|사용자 스토리|인수 조건|다음 중)/i;
+  /^(\d+\.|[A-Z]\.|[ivxlcdm]+\.\s|[Ⅰ-ⅿ]+\.\s?|[•-]\s|TC\d+|AC\d+|조건|동작|번호|첫 번째|두 번째|세 번째|사용자 스토리|인수 조건|다음 중)/i;
 
 const SENTENCE_END_PATTERN = /[.!?:;。！？)”’]$/;
 

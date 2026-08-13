@@ -1,7 +1,7 @@
 import type { Question } from '../types/question';
 import OptionButton from './OptionButton';
 import { getQuestionSourceInfo } from '../utils/sourcePdfs';
-import { normalizeExtractedQuestionText } from '../utils/text';
+import QuestionBody from './QuestionBody';
 
 interface Props {
   question: Question;
@@ -35,7 +35,6 @@ export default function ExamQuestionCard({
   canSubmit,
 }: Props) {
   const selected = new Set(selectedAnswers);
-  const questionText = normalizeExtractedQuestionText(question.questionText);
   const questionSourceLabel = `실러버스 ${question.examSet.toUpperCase()} ${question.questionNumber}번`;
   const sourceInfo = getQuestionSourceInfo(question);
 
@@ -87,7 +86,7 @@ export default function ExamQuestionCard({
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 
-      <div className="question-text">{questionText}</div>
+      <QuestionBody questionText={question.questionText} />
 
       {question.isMultipleAnswer && (
         <p className="multi-hint">

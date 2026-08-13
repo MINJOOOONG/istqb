@@ -5,7 +5,7 @@ import QuestionResult from './QuestionResult';
 import { checkAnswer } from '../utils/quiz';
 import { recordAnswer, removeWrongId, getWrongIds, saveWrongNote } from '../utils/storage';
 import { getQuestionSourceInfo } from '../utils/sourcePdfs';
-import { normalizeExtractedQuestionText } from '../utils/text';
+import QuestionBody from './QuestionBody';
 
 // --- QuestionCard component ---
 
@@ -111,7 +111,6 @@ export default function QuestionCard({
   const isInWrong = getWrongIds().includes(question.id);
   const questionSourceLabel = `실러버스 ${question.examSet.toUpperCase()} ${question.questionNumber}번`;
   const sourceInfo = getQuestionSourceInfo(question);
-  const questionText = normalizeExtractedQuestionText(question.questionText);
 
   return (
     <div className="question-card">
@@ -134,7 +133,7 @@ export default function QuestionCard({
         <span className="meta-lo">{question.learningObjective}</span>
       </div>
 
-      <div className="question-text">{questionText}</div>
+      <QuestionBody questionText={question.questionText} />
 
       {question.isMultipleAnswer && (
         <p className="multi-hint">

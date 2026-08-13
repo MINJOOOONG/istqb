@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ExamResult } from '../utils/quiz';
 import { getConciseExplanationLines } from '../utils/explanations';
+import QuestionBody from './QuestionBody';
 
 interface Props {
   result: ExamResult;
@@ -110,9 +111,10 @@ export default function ExamResultPage({ result, onRetryWrong, onRetryAll }: Pro
 
                   {isExpanded && (
                     <div className="wrong-review-detail">
-                      <p className="wrong-review-question-text">
-                        {item.question.questionText}
-                      </p>
+                      <QuestionBody
+                        questionText={item.question.questionText}
+                        className="wrong-review-question-text"
+                      />
 
                       <div className="wrong-review-options">
                         {item.question.options.map((opt) => {
