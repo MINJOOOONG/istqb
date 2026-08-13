@@ -693,6 +693,84 @@ body {
   word-break: break-word;
 }
 
+/* 원본 시험지를 잘라낸 지문 이미지 */
+.question-stem-image {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.question-image-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.question-image-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.question-image-hint {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray);
+  text-align: right;
+}
+
+.question-image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  background: rgba(17, 17, 17, 0.94);
+}
+
+.question-image-scroll {
+  width: 100%;
+  max-height: 100dvh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 56px 8px 24px;
+}
+
+.question-image-scroll img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.question-image-scroll img.enlarged {
+  width: 260%;
+  max-width: none;
+  cursor: zoom-out;
+}
+
+.question-image-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .multi-hint {
   font-size: 13px;
   color: var(--orange);
