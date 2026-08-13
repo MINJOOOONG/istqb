@@ -592,12 +592,19 @@ body {
   margin-bottom: 14px;
 }
 
-.question-paragraph {
-  white-space: pre-line;
+.question-line + .question-line {
+  margin-top: 4px;
 }
 
-.question-paragraph + .question-paragraph {
-  margin-top: 10px;
+/* 목록 항목은 둘째 줄부터 기호 너비만큼 들여쓴다 */
+.question-line.list {
+  padding-left: 1.05em;
+  text-indent: -1.05em;
+}
+
+.question-line-gap {
+  display: block;
+  height: 10px;
 }
 
 /* 지문 안에 들어가는 표(결정 테이블, 상태 전이 테이블 등) */

@@ -9,6 +9,9 @@ interface Props {
   className?: string;
 }
 
+/** 줄이 목록 항목이면 둘째 줄부터 들여쓰기해 읽기 쉽게 만든다 */
+const LIST_LINE_PATTERN = /^\s*(•|[-–]\s|\(\d+\)|\d+[.)]\s|[A-Z][.)]\s|[Ⅰ-ⅿ]+[.)]|TC\d+[:.]|AC\d+[:.])/;
+
 /** `| 결과 | > | > |` 처럼 행 전체를 차지하는 구분 행인지 확인한다. */
 function isSectionRow(row: QuestionTableCell[]) {
   return row.length === 1 && row[0].colSpan > 1;
@@ -48,9 +51,20 @@ export default function QuestionBody({ questionText, className = 'question-text'
       {blocks.map((block, index) => {
         if (block.type === 'text') {
           return (
-            <p key={index} className="question-paragraph">
-              {block.text}
-            </p>
+            <div key={index} className="question-paragraph">
+              {block.text.split('\n').map((line, lineIndex) =>
+                line.trim() ? (
+                  <p
+                    key={lineIndex}
+                    className={LIST_LINE_PATTERN.test(line) ? 'question-line list' : 'question-line'}
+                  >
+                    {line}
+                  </p>
+                ) : (
+                  <span key={lineIndex} className="question-line-gap" />
+                ),
+              )}
+            </div>
           );
         }
 
